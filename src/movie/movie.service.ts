@@ -32,20 +32,20 @@ export class MovieService {
   async getMovieById(id: number) {
     const movie = await this.movieRepository.findOne({
       where: { id },
-      relations: ['detail'],
+      relations: ['movieDetail'],
     });
     return movie;
   }
 
   async createMovie(createMovieDto: CreateMovieDto) {
-    const movieDetail = await this.movieDetailRepository.save({
-      detail: createMovieDto.detail,
-    });
+    // const movieDetail = await this.movieDetailRepository.save({
+    //   detail: createMovieDto.detail,
+    // });
 
     const movie = await this.movieRepository.save({
       title: createMovieDto.title,
       genre: createMovieDto.genre,
-      detail: movieDetail,
+      movieDetail: { detail: createMovieDto.detail },
     });
 
     return movie;
@@ -54,7 +54,7 @@ export class MovieService {
   async updateMovie(id: number, updateMovieDto: UpdateMovieDto) {
     const movie = await this.movieRepository.findOne({
       where: { id },
-      relations: ['detail'],
+      relations: ['movieDetail'],
     });
 
     if (!movie) {
@@ -67,14 +67,15 @@ export class MovieService {
 
     if (detail) {
       await this.movieDetailRepository.update(
-        { id: movie.detail.id },
+        // { id: movie.detail.id },
+        { id: movie.movieDetail.id },
         { detail },
       );
     }
 
     const newMovie = await this.movieRepository.findOne({
       where: { id },
-      relations: ['detail'],
+      relations: ['movieDetail'],
     });
 
     return newMovie;
@@ -83,7 +84,7 @@ export class MovieService {
   async deleteMovie(id: number) {
     const movie = await this.movieRepository.findOne({
       where: { id },
-      relations: ['detail'],
+      relations: ['movieDetail'],
     });
 
     if (!movie) {
@@ -92,7 +93,8 @@ export class MovieService {
 
     await this.movieRepository.delete(id);
 
-    await this.movieDetailRepository.delete(movie.detail.id);
+    // await this.movieDetailRepository.delete(movie.detail.id);
+    await this.movieDetailRepository.delete(movie.movieDetail.id);
     return id;
   }
 }
