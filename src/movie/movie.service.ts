@@ -21,16 +21,22 @@ export class MovieService {
     private readonly genreRepository: Repository<Genre>,
   ) {}
 
-  findAll(title?: string) {
+  async findAll(title?: string) {
     ///title 필터 기능 추가하기
     if (!title) {
-      return this.movieRepository.find();
+      return [
+        await this.movieRepository.find({
+          relations: ['director', 'genre'],
+        }),
+        await this.movieRepository.count(),
+      ];
     }
 
-    return this.movieRepository.find({
+    return this.movieRepository.findAndCount({
       where: {
         title: Like(`%${title}%`),
       },
+      relations: ['director', 'genres'],
     });
   }
 
