@@ -1,6 +1,15 @@
-import { Controller, Post, Headers, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Headers,
+  UseGuards,
+  Request,
+  Get,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './strategy/local.strategy';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from './strategy/jwt.strategy';
 
 @Controller('auth')
 export class AuthController {
@@ -12,16 +21,31 @@ export class AuthController {
     return this.authService.register(token);
   }
 
+  /**
+   * 직접 구현한 로그인
+   * */
   @Post('login')
   //authorization: Basic $token
-  loginUser(@Headers('authorization') token: string) {
-    return this.authService.loginUser(token);
+  async loginUser(@Headers('authorization') token: string) {
+    return await this.authService.loginUser(token);
   }
 
-  // @UseGuards(AuthGuard('local'))
+  /**
+   * passport-local 을 이용한 로그인
+   * */
   @UseGuards(LocalAuthGuard)
   @Post('login/passport')
-  loginUserPassport(@Request() req) {
+  async loginUserPassport(@Request() req) {
+    return {
+      refreshToken: await this.authService.issueToken(req.user, true),
+      accessToken: await this.authService.issueToken(req.user, false),
+    };
+  }
+
+  //passport를 통과하지 못하면 아래 함수는 실행되지 않는다.
+  @UseGuards(JwtAuthGuard)
+  @Get('private')
+  async private(@Request() req) {
     return req.user;
   }
 }
