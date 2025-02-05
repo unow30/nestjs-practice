@@ -42,6 +42,14 @@ export class AuthController {
     };
   }
 
+  @Post('token/access')
+  async rotateAccessToken(@Headers('authorization') token: string) {
+    const payload = await this.authService.parseBearerToken(token, true);
+    return {
+      accessToken: await this.authService.issueToken(payload, false),
+    };
+  }
+
   //passport를 통과하지 못하면 아래 함수는 실행되지 않는다.
   @UseGuards(JwtAuthGuard)
   @Get('private')
