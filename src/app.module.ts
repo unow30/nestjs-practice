@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { MovieModule } from './movie/movie.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -13,6 +18,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { envVariableKeys } from './common/const/env.const';
+import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware';
 
 @Module({
   imports: [
@@ -39,22 +45,12 @@ import { envVariableKeys } from './common/const/env.const';
         port: configService.get<number>(envVariableKeys.dbPort),
         username: configService.get<string>(envVariableKeys.dbUsername),
         password: configService.get<string>(envVariableKeys.dbPassword),
-        database: configService.get<string>(envVariableKeys.dbDatabasse),
+        database: configService.get<string>(envVariableKeys.dbDatabase),
         entities: [Movie, MovieDetail, Director, Genre, User],
         synchronize: true, //코드에 맞게 db를 동기화. 개발할때만 true
       }),
       inject: [ConfigService],
     }),
-    // TypeOrmModule.forRoot({
-    //   type: process.env.DB_TYPE as 'postgres',
-    //   host: process.env.DB_HOST,
-    //   port: parseInt(process.env.DB_PORT),
-    //   username: process.env.DB_USERNAME,
-    //   password: process.env.DB_PASSWORD,
-    //   database: process.env.DB_DATABASE,
-    //   entities: [],
-    //   synchronize: true, //코드에 맞게 db를 동기화. 개발할때만 true
-    // }),
     MovieModule,
     DirectorModule,
     GenreModule,
@@ -65,4 +61,20 @@ import { envVariableKeys } from './common/const/env.const';
   controllers: [],
   providers: [], //Ioc컨태이너에 injectable할 클래스
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(BearerTokenMiddleware)
+      .exclude(
+        {
+          path: 'auth/login',
+          method: RequestMethod.POST,
+        },
+        {
+          path: 'auth/register',
+          method: RequestMethod.POST,
+        },
+      )
+      .forRoutes('*');
+  }
+}

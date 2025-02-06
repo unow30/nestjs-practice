@@ -53,7 +53,6 @@ export class AuthService {
   async parseBearerToken(rawToken: string, isRefreshToken: boolean) {
     // 1. 토큰을 ' '기준으로 split 후 토큰값만 추출
     //['bearer', $token]
-    console.log(rawToken);
     const basicSplit = rawToken.split(' ');
     if (basicSplit.length !== 2) {
       throw new BadRequestException('토큰 포맷이 잘못되었습니다.');
@@ -69,7 +68,9 @@ export class AuthService {
       //payload 가져오며 검증도 한다.
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<'string'>(
-          envVariableKeys.refreshTokenSecret,
+          isRefreshToken
+            ? envVariableKeys.refreshTokenSecret
+            : envVariableKeys.accessTokenSecret,
         ),
       });
       if (isRefreshToken) {
@@ -130,7 +131,7 @@ export class AuthService {
       envVariableKeys.refreshTokenSecret,
     );
     const accessTokenSecret = this.configService.get<string>(
-      envVariableKeys.accseeTokenSecret,
+      envVariableKeys.accessTokenSecret,
     );
     return await this.jwtService.signAsync(
       {

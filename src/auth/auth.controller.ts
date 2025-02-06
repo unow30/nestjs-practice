@@ -27,6 +27,7 @@ export class AuthController {
   @Post('login')
   //authorization: Basic $token
   async loginUser(@Headers('authorization') token: string) {
+    console.log(token);
     return await this.authService.loginUser(token);
   }
 

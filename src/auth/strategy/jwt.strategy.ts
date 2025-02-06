@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       /// Bearer $token
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false, //jwt만료기간 무시하고 검증할지 확인
-      secretOrKey: configService.get<string>(envVariableKeys.accseeTokenSecret),
+      secretOrKey: configService.get<string>(envVariableKeys.accessTokenSecret),
     });
   }
 
