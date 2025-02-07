@@ -32,6 +32,7 @@ export class BearerTokenMiddleware implements NestMiddleware {
     try {
       //디코드만 하고 검증은 안한다.
       const decodedPayload = this.jwtService.decode(token);
+      console.log('decodedPayload', decodedPayload);
       if (
         decodedPayload.type !== 'refresh' &&
         decodedPayload.type !== 'access'
@@ -47,8 +48,10 @@ export class BearerTokenMiddleware implements NestMiddleware {
             : envVariableKeys.accessTokenSecret,
         ),
       });
+      console.log('payload', payload);
 
       req['user'] = payload;
+      next();
     } catch (error) {
       //error 에 따른 throw 설정 가능
       console.log(error);
@@ -57,7 +60,7 @@ export class BearerTokenMiddleware implements NestMiddleware {
   }
 
   validateBearerToken(rawToken: string) {
-    console.log(rawToken);
+    // console.log(rawToken);
     const basicSplit = rawToken.split(' ');
     if (basicSplit.length !== 2) {
       throw new BadRequestException('토큰 포맷이 잘못되었습니다.');

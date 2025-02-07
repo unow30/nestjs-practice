@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './strategy/local.strategy';
-import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './strategy/jwt.strategy';
 
 @Controller('auth')
@@ -43,11 +42,20 @@ export class AuthController {
     };
   }
 
-  @Post('token/access')
+  /*
+   미들웨어 적용으로 인한 수정(BearerTokenMiddleware)
+   @Post('token/access')
   async rotateAccessToken(@Headers('authorization') token: string) {
     const payload = await this.authService.parseBearerToken(token, true);
     return {
       accessToken: await this.authService.issueToken(payload, false),
+    };
+  }
+  */
+  @Post('token/access')
+  async rotateAccessToken(@Request() req) {
+    return {
+      accessToken: await this.authService.issueToken(req.user, false),
     };
   }
 

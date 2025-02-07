@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   ClassSerializerInterceptor,
+  Request,
   UseInterceptors,
   ParseIntPipe,
 } from '@nestjs/common';
@@ -22,7 +23,11 @@ export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
   @Get()
-  getMovies(@Query('title', MovieTitleValidationPipe) title?: string) {
+  getMovies(
+    @Request() req: any,
+    @Query('title', MovieTitleValidationPipe) title?: string,
+  ) {
+    console.log(req.user);
     return this.movieService.findAll(title);
   }
 
