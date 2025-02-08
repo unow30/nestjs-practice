@@ -48,7 +48,6 @@ export class BearerTokenMiddleware implements NestMiddleware {
             : envVariableKeys.accessTokenSecret,
         ),
       });
-      console.log('payload', payload);
 
       req['user'] = payload;
       next();
