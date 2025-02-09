@@ -20,6 +20,7 @@ import { MovieTitleValidationPipe } from './pipe/movie-title-validation.pipe';
 import { Public } from '../auth/decorator/public.decorator';
 import { Role } from '../user/entities/user.entity';
 import { RBAC } from '../auth/decorator/rbac.decorator';
+import { GetMoviesDto } from './dto/get-movies.dto';
 
 @Controller('movie')
 @UseInterceptors(ClassSerializerInterceptor) //class transformer를 movie controller에 적용하겠다.
@@ -28,8 +29,8 @@ export class MovieController {
 
   @Get()
   @Public()
-  getMovies(@Query('title', MovieTitleValidationPipe) title?: string) {
-    return this.movieService.findAll(title);
+  getMovies(@Query() dto: GetMoviesDto) {
+    return this.movieService.findAll(dto);
   }
 
   @Get(':id')

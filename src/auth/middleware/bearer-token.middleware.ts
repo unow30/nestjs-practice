@@ -32,7 +32,7 @@ export class BearerTokenMiddleware implements NestMiddleware {
     try {
       //디코드만 하고 검증은 안한다.
       const decodedPayload = this.jwtService.decode(token);
-      console.log('decodedPayload', decodedPayload);
+
       if (
         decodedPayload.type !== 'refresh' &&
         decodedPayload.type !== 'access'
