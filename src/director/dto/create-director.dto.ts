@@ -11,7 +11,6 @@ export class CreateDirectorDto {
   name: string;
 
   @IsNotEmpty()
-  @IsDateString()
   dob: Date;
 
   @IsNotEmpty()

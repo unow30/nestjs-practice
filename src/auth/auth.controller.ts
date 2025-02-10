@@ -55,6 +55,7 @@ export class AuthController {
     };
   }
   */
+  @Public()
   @Post('token/access')
   async rotateAccessToken(@Request() req) {
     return {
