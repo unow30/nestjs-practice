@@ -1,13 +1,20 @@
-import { IsIn, IsInt, IsOptional } from 'class-validator';
+import { IsArray, IsIn, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class CursorPaginationDto {
-  @IsInt()
+  @IsString()
   @IsOptional()
-  id: number;
+  // 정렬을 할 값을 콤마로 받는다.
+  // id_52, likeCount_20
+  cursor?: string;
 
-  @IsIn(['ASC', 'DESC'])
+  @IsArray()
+  @IsString({
+    each: true, //전부 문자열
+  })
   @IsOptional()
-  order: 'ASC' | 'DESC' = 'DESC';
+  // id_ASC or id_DESC
+  // [id_DESC, likeCount_DESC]
+  order: string[] = ['id_DESC'];
 
   @IsInt()
   @IsOptional()

@@ -40,8 +40,12 @@ export class MovieService {
     }
 
     // this.commonService.applyPagePaginationParamsToQb(qb, dto);
-    this.commonService.applyCursorPaginationParamsToQb(qb, dto);
-    return await qb.getManyAndCount();
+    const { nextCursor } =
+      await this.commonService.applyCursorPaginationParamsToQb(qb, dto);
+
+    const [data, count] = await qb.getManyAndCount();
+
+    return { data, nextCursor, count };
   }
 
   async findOne(id: number) {
