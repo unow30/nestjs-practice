@@ -3,7 +3,7 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Movie } from './entity/movie.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, In, Repository } from 'typeorm';
+import { DataSource, In, QueryRunner, Repository } from 'typeorm';
 import { MovieDetail } from './entity/movie-detail.entity';
 import { Director } from '../director/entity/director.entity';
 import { Genre } from '../genre/entities/genre.entity';
@@ -58,10 +58,6 @@ export class MovieService {
       .setParameter('id', id)
       .getOne();
 
-    // const movie = await this.movieRepository.findOne({
-    //   where: { id },
-    //   relations: ['movieDetail', 'director', 'genres'],
-    // });
     if (!movie) {
       throw new NotFoundException('존재하지 않는 id의 영화입니다.');
     }
@@ -69,7 +65,7 @@ export class MovieService {
     return movie;
   }
 
-  async create(createMovieDto: CreateMovieDto) {
+  async create(createMovieDto: CreateMovieDto, qr: QueryRunner) {
     const director = await this.directorRepository.findOne({
       where: { id: createMovieDto.directorId },
     });
@@ -95,19 +91,6 @@ export class MovieService {
       director,
       genres,
     });
-
-    //쿼리빌더 사용시
-    /**
-     * 1. movieDetail을 insert values(detail값 입력)후 execute()
-     * 2. 1의 결과값에 identifiers[0].id로 생성한 값 1개의 id를 가져온다.
-     * 3. movie를 insert values(title, detail(2의 id 입력), director 입력)
-     * 4. manyToMany 는 쿼리빌더에서 그냥 안된다(엔티티 양쪽에 cascade 인 경우)
-     * 5. movie queryBuilder에서 relation(Movie, 'genres')설정
-     * 6. 3 에서 생성값의 identifier[0].id를 of에 입력
-     * 7. .add(genres.map(g => g.id), director.map(d=>d.id)한다.
-     * 8. movieRepository 를 fidnOne, relations:['detail','genres','director']를 불러온다.
-     * 9. 트랜잭션 이슈 발생하니 관련작업 필요
-     * */
 
     return movie;
   }
