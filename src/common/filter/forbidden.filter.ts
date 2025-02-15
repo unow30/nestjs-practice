@@ -19,7 +19,7 @@ export class ForbiddenExceptionFilter implements ExceptionFilter {
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
-      path: request.url,
+      path: `${request.method} ${request.url}`,
       message: '권한이 없습니다.',
     });
   }

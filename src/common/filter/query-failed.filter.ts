@@ -7,6 +7,8 @@ export class QueryFailedExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
+    // const file = request.files;
+    // console.log('file', file);
 
     const status = 400; // 클라이언트 에러라고 가정
 
@@ -19,7 +21,7 @@ export class QueryFailedExceptionFilter implements ExceptionFilter {
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
-      path: request.url,
+      path: `${request.method} ${request.url}`,
       message: message,
     });
   }
