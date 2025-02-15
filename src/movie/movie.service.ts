@@ -9,6 +9,7 @@ import { Director } from '../director/entity/director.entity';
 import { Genre } from '../genre/entities/genre.entity';
 import { GetMoviesDto } from './dto/get-movies.dto';
 import { CommonService } from '../common/common.service';
+import { join } from 'path';
 
 @Injectable()
 export class MovieService {
@@ -65,7 +66,11 @@ export class MovieService {
     return movie;
   }
 
-  async create(createMovieDto: CreateMovieDto, qr: QueryRunner) {
+  async create(
+    createMovieDto: CreateMovieDto,
+    movieFileName: string,
+    qr: QueryRunner,
+  ) {
     const director = await this.directorRepository.findOne({
       where: { id: createMovieDto.directorId },
     });
@@ -85,11 +90,16 @@ export class MovieService {
         `존재하지 않는 장르가 있습니다! ids -> ${genres.map((genre) => genre.id).join(',')}`,
       );
     }
+
+    const movieFolder = join('public', 'movie');
+    console.log('movieFileName', movieFileName);
+
     const movie = await this.movieRepository.save({
       title: createMovieDto.title,
       movieDetail: { detail: createMovieDto.detail },
       director,
       genres,
+      movieFilePath: join(movieFolder, movieFileName),
     });
 
     return movie;
