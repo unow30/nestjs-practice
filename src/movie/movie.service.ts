@@ -10,6 +10,7 @@ import { Genre } from '../genre/entities/genre.entity';
 import { GetMoviesDto } from './dto/get-movies.dto';
 import { CommonService } from '../common/common.service';
 import { join } from 'path';
+import { rename } from 'fs/promises';
 
 @Injectable()
 export class MovieService {
@@ -23,7 +24,6 @@ export class MovieService {
     @InjectRepository(Genre)
     private readonly genreRepository: Repository<Genre>,
     private readonly dataSource: DataSource,
-
     private readonly commonService: CommonService,
   ) {}
 
@@ -66,11 +66,7 @@ export class MovieService {
     return movie;
   }
 
-  async create(
-    createMovieDto: CreateMovieDto,
-    movieFileName: string,
-    qr: QueryRunner,
-  ) {
+  async create(createMovieDto: CreateMovieDto, qr: QueryRunner) {
     const director = await this.directorRepository.findOne({
       where: { id: createMovieDto.directorId },
     });
@@ -91,18 +87,47 @@ export class MovieService {
       );
     }
 
+    const movieDetail = await this.movieDetailRepository
+      .createQueryBuilder()
+      .insert()
+      .into(MovieDetail)
+      .values({ detail: createMovieDto.detail })
+      .execute();
+
+    const movieDetailId = movieDetail.identifiers[0].id;
+
     const movieFolder = join('public', 'movie');
-    console.log('movieFileName', movieFileName);
+    const tempFolder = join('public', 'temp');
 
-    const movie = await this.movieRepository.save({
-      title: createMovieDto.title,
-      movieDetail: { detail: createMovieDto.detail },
-      director,
-      genres,
-      movieFilePath: join(movieFolder, movieFileName),
+    await rename(
+      join(process.cwd(), tempFolder, createMovieDto.movieFileName),
+      join(process.cwd(), movieFolder, createMovieDto.movieFileName),
+    );
+
+    const movie = await this.movieRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Movie)
+      .values({
+        title: createMovieDto.title,
+        movieDetail: { id: movieDetailId },
+        director,
+        movieFileName: join(movieFolder, createMovieDto.movieFileName),
+      })
+      .execute();
+
+    const movieId = movie.identifiers[0].id;
+
+    await this.movieRepository
+      .createQueryBuilder()
+      .relation(Movie, 'genres')
+      .of(movieId)
+      .add(genres.map((genre) => genre.id));
+
+    return this.movieRepository.findOne({
+      where: { id: movieId },
+      relations: ['movieDetail', 'director', 'genres'],
     });
-
-    return movie;
   }
 
   async update(id: number, updateMovieDto: UpdateMovieDto) {

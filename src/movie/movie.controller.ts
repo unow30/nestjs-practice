@@ -45,26 +45,8 @@ export class MovieController {
   @Post()
   @RBAC(Role.admin)
   @UseInterceptors(TransactionInterceptor)
-  @UseInterceptors(
-    FileInterceptor('movie', {
-      limits: { fileSize: 200000000 },
-      fileFilter(req, file, callback) {
-        if (file.mimetype !== 'video/mp4') {
-          return callback(
-            new BadRequestException('mp4타입만 업로드 가능합니다.'),
-            false,
-          );
-        }
-        return callback(null, true);
-      },
-    }),
-  )
-  postMovie(
-    @Body() body: CreateMovieDto,
-    @Request() req,
-    @UploadedFile() movie?: Express.Multer.File,
-  ) {
-    return this.movieService.create(body, movie.filename, req.queryRunner);
+  postMovie(@Body() body: CreateMovieDto, @Request() req) {
+    return this.movieService.create(body, req.queryRunner);
   }
 
   @Patch(':id')
