@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTable } from '../../common/entity/base-table.entity';
 import { Exclude } from 'class-transformer';
+import { Movie } from '../../movie/entity/movie.entity';
 
 export enum Role {
   admin,
@@ -29,4 +30,7 @@ export class User extends BaseTable {
     default: Role.user,
   })
   role: Role;
+
+  @ManyToOne(() => Movie, (movie) => movie.creator)
+  createdMovies: Movie[];
 }

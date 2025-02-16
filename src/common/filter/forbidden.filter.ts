@@ -8,9 +8,9 @@ import {
 @Catch(ForbiddenException)
 export class ForbiddenExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
-    const request = ctx.getRequest();
+    const context = host.switchToHttp();
+    const response = context.getResponse();
+    const request = context.getRequest();
 
     const status = exception.getStatus();
 

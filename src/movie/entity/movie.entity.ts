@@ -5,6 +5,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -13,6 +14,7 @@ import { MovieDetail } from './movie-detail.entity';
 import { Director } from '../../director/entity/director.entity';
 import { Genre } from '../../genre/entities/genre.entity';
 import { Transform } from 'class-transformer';
+import { User } from '../../user/entities/user.entity';
 
 /// manyToOne Director -> 감독은 여러개의 영화를 만들 수 있음
 /// oneToMany MovieDetail ->영화는 하나의 상세 내용을 가질 수 있음
@@ -22,6 +24,9 @@ import { Transform } from 'class-transformer';
 export class Movie extends BaseTable {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @OneToMany(() => User, (user) => user.createdMovies)
+  creator: User;
 
   @Column({
     unique: true,

@@ -4,9 +4,9 @@ import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 @Catch(QueryFailedError)
 export class QueryFailedExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
-    const request = ctx.getRequest();
+    const context = host.switchToHttp();
+    const response = context.getResponse();
+    const request = context.getRequest();
     // const file = request.files;
     // console.log('file', file);
 

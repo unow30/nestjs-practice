@@ -66,8 +66,12 @@ export class MovieService {
     return movie;
   }
 
-  async create(createMovieDto: CreateMovieDto, qr: QueryRunner) {
-    const director = await this.directorRepository.findOne({
+  async create(
+    createMovieDto: CreateMovieDto,
+    qr: QueryRunner,
+    userId: number,
+  ) {
+    const director = await qr.manager.findOne(Director, {
       where: { id: createMovieDto.directorId },
     });
 
@@ -75,7 +79,7 @@ export class MovieService {
       throw new NotFoundException('존재하지 않은 id의 감독입니다.');
     }
 
-    const genres = await this.genreRepository.find({
+    const genres = await qr.manager.find(Genre, {
       where: {
         id: In(createMovieDto.genreIds),
       },
@@ -87,7 +91,7 @@ export class MovieService {
       );
     }
 
-    const movieDetail = await this.movieDetailRepository
+    const movieDetail = await qr.manager
       .createQueryBuilder()
       .insert()
       .into(MovieDetail)
@@ -99,12 +103,7 @@ export class MovieService {
     const movieFolder = join('public', 'movie');
     const tempFolder = join('public', 'temp');
 
-    await rename(
-      join(process.cwd(), tempFolder, createMovieDto.movieFileName),
-      join(process.cwd(), movieFolder, createMovieDto.movieFileName),
-    );
-
-    const movie = await this.movieRepository
+    const movie = await qr.manager
       .createQueryBuilder()
       .insert()
       .into(Movie)
@@ -112,19 +111,26 @@ export class MovieService {
         title: createMovieDto.title,
         movieDetail: { id: movieDetailId },
         director,
+        creator: { id: userId },
         movieFileName: join(movieFolder, createMovieDto.movieFileName),
       })
       .execute();
 
     const movieId = movie.identifiers[0].id;
 
-    await this.movieRepository
+    await qr.manager
       .createQueryBuilder()
       .relation(Movie, 'genres')
       .of(movieId)
       .add(genres.map((genre) => genre.id));
 
-    return this.movieRepository.findOne({
+    //트랜잭션에서 에러 발생시 파일 이동이 일어나지 않도록 마지막에 실행
+    await rename(
+      join(process.cwd(), tempFolder, createMovieDto.movieFileName),
+      join(process.cwd(), movieFolder, createMovieDto.movieFileName),
+    );
+
+    return qr.manager.findOne(Movie, {
       where: { id: movieId },
       relations: ['movieDetail', 'director', 'genres'],
     });

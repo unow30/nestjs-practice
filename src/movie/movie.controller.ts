@@ -21,9 +21,8 @@ import { Public } from '../auth/decorator/public.decorator';
 import { Role } from '../user/entities/user.entity';
 import { RBAC } from '../auth/decorator/rbac.decorator';
 import { GetMoviesDto } from './dto/get-movies.dto';
-import { CacheInterceptor } from '../common/interceptor/cache.interceptor';
 import { TransactionInterceptor } from '../common/interceptor/transaction.interceptor';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { UserId } from '../user/decorator/user-id.decorator';
 
 @Controller('movie')
 @UseInterceptors(ClassSerializerInterceptor) //class transformer를 movie controller에 적용하겠다.
@@ -45,8 +44,12 @@ export class MovieController {
   @Post()
   @RBAC(Role.admin)
   @UseInterceptors(TransactionInterceptor)
-  postMovie(@Body() body: CreateMovieDto, @Request() req) {
-    return this.movieService.create(body, req.queryRunner);
+  postMovie(
+    @Body() body: CreateMovieDto,
+    @Request() req,
+    @UserId() userId: number,
+  ) {
+    return this.movieService.create(body, req.queryRunner, userId);
   }
 
   @Patch(':id')
