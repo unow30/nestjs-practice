@@ -25,7 +25,7 @@ export class Movie extends BaseTable {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => User, (user) => user.createdMovies)
+  @ManyToOne(() => User, (user) => user.createdMovies)
   creator: User;
 
   @Column({

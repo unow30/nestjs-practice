@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTable } from '../../common/entity/base-table.entity';
 import { Exclude } from 'class-transformer';
 import { Movie } from '../../movie/entity/movie.entity';
@@ -31,6 +31,6 @@ export class User extends BaseTable {
   })
   role: Role;
 
-  @ManyToOne(() => Movie, (movie) => movie.creator)
+  @OneToMany(() => Movie, (movie) => movie.creator)
   createdMovies: Movie[];
 }
