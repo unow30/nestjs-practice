@@ -11,7 +11,9 @@ export class MovieUserLike extends BaseTable {
     name: 'movieId',
     type: 'int8',
   })
-  @ManyToOne(() => Movie, (movie) => movie.likedUsers)
+  @ManyToOne(() => Movie, (movie) => movie.likedUsers, {
+    onDelete: 'CASCADE', // 영화가 지워진 경우 같이 지워진다.
+  })
   movie: Movie;
 
   //좋아요 유저
@@ -19,7 +21,9 @@ export class MovieUserLike extends BaseTable {
     name: 'userId',
     type: 'int8',
   })
-  @ManyToOne(() => User, (user) => user.likedMovies)
+  @ManyToOne(() => User, (user) => user.likedMovies, {
+    onDelete: 'CASCADE',
+  })
   user: User;
 
   @Column()
