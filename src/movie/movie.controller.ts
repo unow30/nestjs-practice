@@ -22,6 +22,11 @@ import { TransactionInterceptor } from '../common/interceptor/transaction.interc
 import { UserId } from '../user/decorator/user-id.decorator';
 import { QueryRunner } from '../common/decorator/query-runner.decorator';
 import { QueryRunner as QR } from 'typeorm';
+import {
+  CacheInterceptor as CI,
+  CacheKey,
+  CacheTTL,
+} from '@nestjs/cache-manager';
 
 @Controller('movie')
 @UseInterceptors(ClassSerializerInterceptor) //class transformer를 movie controller에 적용하겠다.
@@ -34,6 +39,17 @@ export class MovieController {
     return this.movieService.findAll(dto, userId);
   }
 
+  //movie/recent
+  @Get('recent')
+  @UseInterceptors(CI)
+  @CacheKey('getMoviesRecent')
+  @CacheTTL(1000)
+  getMovieRecent() {
+    console.log('getMoviesRecent() 실행');
+    return this.movieService.findRecent();
+  }
+
+  //movie/(number)
   @Get(':id')
   @Public()
   getMovie(@Param('id', ParseIntPipe) id: number) {
