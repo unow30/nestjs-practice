@@ -13,5 +13,6 @@ export const QueryRunner = createParamDecorator(
         'Query Runner 객체를 찾을 수 없습니다.',
       );
     }
+    return request.queryRunner;
   },
 );

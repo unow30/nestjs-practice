@@ -15,6 +15,7 @@ import { Director } from '../../director/entity/director.entity';
 import { Genre } from '../../genre/entities/genre.entity';
 import { Transform } from 'class-transformer';
 import { User } from '../../user/entities/user.entity';
+import { MovieUserLike } from './movie-user-like.entity';
 
 /// manyToOne Director -> 감독은 여러개의 영화를 만들 수 있음
 /// oneToMany MovieDetail ->영화는 하나의 상세 내용을 가질 수 있음
@@ -58,4 +59,7 @@ export class Movie extends BaseTable {
   @Column()
   @Transform(({ value }) => `http://localhost:3000/${value}`)
   movieFileName: string;
+
+  @OneToMany(() => MovieUserLike, (mul) => mul.movie)
+  likedUsers: MovieUserLike[];
 }

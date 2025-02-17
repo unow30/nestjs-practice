@@ -65,4 +65,20 @@ export class MovieController {
   deleteMovie(@Param('id', ParseIntPipe) id: number) {
     return this.movieService.remove(id);
   }
+
+  @Post(':id/like')
+  createMovieLike(
+    @Param('id', ParseIntPipe) movieId: number,
+    @UserId() userId: number,
+  ) {
+    return this.movieService.toggleMovieLike(userId, movieId, true);
+  }
+
+  @Post(':id/dislike')
+  createMovieDislike(
+    @Param('id', ParseIntPipe) movieId: number,
+    @UserId() userId: number,
+  ) {
+    return this.movieService.toggleMovieLike(userId, movieId, false);
+  }
 }
