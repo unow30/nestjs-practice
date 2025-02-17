@@ -16,7 +16,7 @@ export class MovieUserLike extends BaseTable {
 
   //좋아요 유저
   @PrimaryColumn({
-    name: 'user',
+    name: 'userId',
     type: 'int8',
   })
   @ManyToOne(() => User, (user) => user.likedMovies)
