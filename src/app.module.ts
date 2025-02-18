@@ -29,6 +29,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MovieUserLike } from './movie/entity/movie-user-like.entity';
 import { CacheModule } from '@nestjs/cache-manager';
+import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
 
 @Module({
   imports: [
@@ -70,7 +71,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     GenreModule,
     AuthModule,
     UserModule,
-    CacheModule.register({ ttl: 1000, isGlobal: true }),
+    CacheModule.register({ isGlobal: true }),
   ], //또다른 모듈, 기능을 이 모듈로 불러들일 때 사용
   exports: [], //이 모듈, 기능을 또다른 모듈로 내보낼 때 사용
   controllers: [],
@@ -89,11 +90,11 @@ import { CacheModule } from '@nestjs/cache-manager';
     },
     {
       provide: APP_FILTER,
-      useClass: ForbiddenExceptionFilter,
+      useClass: QueryFailedExceptionFilter,
     },
     {
-      provide: APP_FILTER,
-      useClass: QueryFailedExceptionFilter,
+      provide: APP_INTERCEPTOR,
+      useClass: ThrottleInterceptor,
     },
   ], //Ioc컨태이너에 injectable할 클래스
 })

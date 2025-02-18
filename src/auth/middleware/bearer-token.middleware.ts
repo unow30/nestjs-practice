@@ -31,26 +31,32 @@ export class BearerTokenMiddleware implements NestMiddleware {
       return;
     }
 
+    const token = this.validateBearerToken(authHeader);
+    console.log('token', token);
+
+    const blockedToken = await this.cacheManager.get(`BLOCKED_TOKEN_${token}`);
+    console.log('blockedToken', blockedToken);
+    if (blockedToken) {
+      throw new UnauthorizedException('차단된 토큰입니다.');
+    }
+
+    const tokenKey = `TOKEN_${token}`;
+    const cachedPayload = await this.cacheManager.get(tokenKey);
+
+    console.log('cachedPayload', cachedPayload);
+    if (cachedPayload) {
+      req['user'] = cachedPayload;
+      return next();
+    }
+
+    //디코드만 하고 검증은 안한다.
+    const decodedPayload = this.jwtService.decode(token);
+
+    if (decodedPayload.type !== 'refresh' && decodedPayload.type !== 'access') {
+      throw new UnauthorizedException('잘못된 토큰입니다.');
+    }
+
     try {
-      const token = this.validateBearerToken(authHeader);
-      const tokenKey = `TOKEN_${token}`;
-      const cachedPayload = await this.cacheManager.get(tokenKey);
-
-      if (cachedPayload) {
-        req['user'] = cachedPayload;
-        return next();
-      }
-
-      //디코드만 하고 검증은 안한다.
-      const decodedPayload = this.jwtService.decode(token);
-
-      if (
-        decodedPayload.type !== 'refresh' &&
-        decodedPayload.type !== 'access'
-      ) {
-        throw new UnauthorizedException('잘못된 토큰입니다.');
-      }
-
       //토큰을 한번 검증하면 특정 기간동안 디코딩 할 필요가 없다.
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<'string'>(

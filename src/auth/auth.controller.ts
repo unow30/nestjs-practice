@@ -5,6 +5,7 @@ import {
   UseGuards,
   Request,
   Get,
+  Body,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './strategy/local.strategy';
@@ -31,6 +32,11 @@ export class AuthController {
   async loginUser(@Headers('authorization') token: string) {
     console.log(token);
     return await this.authService.loginUser(token);
+  }
+
+  @Post('token/block')
+  blockToken(@Body('token') token: string) {
+    return this.authService.tokenBlock(token);
   }
 
   /**
