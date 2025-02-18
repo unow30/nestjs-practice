@@ -44,7 +44,6 @@ export class MovieService {
   async findRecent() {
     const cacheData = await this.cacheManager.get('MOVIE_RECENT');
     if (cacheData) {
-      console.log('캐시 가져옴');
       return cacheData;
     }
 
@@ -117,7 +116,7 @@ export class MovieService {
   }
 
   async findOne(id: number) {
-    const movie = this.movieRepository
+    const movie = await this.movieRepository
       .createQueryBuilder('movie')
       .leftJoinAndSelect('movie.director', 'director')
       .leftJoinAndSelect('movie.genres', 'genres')

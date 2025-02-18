@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NestMiddleware,
   UnauthorizedException,
@@ -8,12 +9,15 @@ import { NextFunction } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { envVariableKeys } from '../../common/const/env.const';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class BearerTokenMiddleware implements NestMiddleware {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     /**
@@ -27,9 +31,16 @@ export class BearerTokenMiddleware implements NestMiddleware {
       return;
     }
 
-    const token = this.validateBearerToken(authHeader);
-
     try {
+      const token = this.validateBearerToken(authHeader);
+      const tokenKey = `TOKEN_${token}`;
+      const cachedPayload = await this.cacheManager.get(tokenKey);
+
+      if (cachedPayload) {
+        req['user'] = cachedPayload;
+        return next();
+      }
+
       //디코드만 하고 검증은 안한다.
       const decodedPayload = this.jwtService.decode(token);
 
@@ -40,7 +51,7 @@ export class BearerTokenMiddleware implements NestMiddleware {
         throw new UnauthorizedException('잘못된 토큰입니다.');
       }
 
-      //payload 가져오며 검증도 한다.
+      //토큰을 한번 검증하면 특정 기간동안 디코딩 할 필요가 없다.
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<'string'>(
           decodedPayload.type === 'refresh'
@@ -48,6 +59,17 @@ export class BearerTokenMiddleware implements NestMiddleware {
             : envVariableKeys.accessTokenSecret,
         ),
       });
+      /**
+       * payload['exp] -> epoch time seconds
+       */
+      const expiryDate = +new Date(payload['exp'] * 1000);
+      const now = +Date.now();
+      const diffInSeconds = (expiryDate - now) / 1000;
+      await this.cacheManager.set(
+        tokenKey,
+        payload,
+        Math.max((diffInSeconds - 30) * 1000, 1), //계산시간 고려 최소 1ms
+      );
 
       req['user'] = payload;
       next();

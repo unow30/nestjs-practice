@@ -22,7 +22,6 @@ import { CacheModule } from '@nestjs/cache-manager';
       MovieUserLike,
     ]),
     CommonModule,
-    CacheModule.register({ ttl: 3000 }),
   ],
   controllers: [MovieController],
   providers: [MovieService],

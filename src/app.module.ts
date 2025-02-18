@@ -28,6 +28,7 @@ import { QueryFailedExceptionFilter } from './common/filter/query-failed.filter'
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MovieUserLike } from './movie/entity/movie-user-like.entity';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { MovieUserLike } from './movie/entity/movie-user-like.entity';
     GenreModule,
     AuthModule,
     UserModule,
+    CacheModule.register({ ttl: 1000, isGlobal: true }),
   ], //또다른 모듈, 기능을 이 모듈로 불러들일 때 사용
   exports: [], //이 모듈, 기능을 또다른 모듈로 내보낼 때 사용
   controllers: [],
