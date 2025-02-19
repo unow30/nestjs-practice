@@ -5,6 +5,7 @@ import { readdir, unlink } from 'fs/promises';
 import { Movie } from '../movie/entity/movie.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DefaultLogger } from './logger/default.logger';
 
 @Injectable()
 export class TasksService {
@@ -12,6 +13,7 @@ export class TasksService {
     @InjectRepository(Movie)
     private readonly movieRepository: Repository<Movie>,
     private readonly schedulerRegistry: SchedulerRegistry,
+    private readonly logger: DefaultLogger,
   ) {}
 
   // @Cron('* * * * * *', { name: 'printer' }) //1초마다 실행
