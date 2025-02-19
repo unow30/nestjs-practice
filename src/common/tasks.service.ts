@@ -1,13 +1,56 @@
 import { Injectable } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { join, parse } from 'path';
 import { readdir, unlink } from 'fs/promises';
+import { Movie } from '../movie/entity/movie.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TasksService {
-  constructor() {}
+  constructor(
+    @InjectRepository(Movie)
+    private readonly movieRepository: Repository<Movie>,
+    private readonly schedulerRegistry: SchedulerRegistry,
+  ) {}
 
-  @Cron('* * * * * *')
+  // @Cron('* * * * * *', { name: 'printer' }) //1초마다 실행
+  printer() {
+    console.log('print every second');
+  }
+
+  // @Cron('*/5 * * * * *') //5초마다 실행
+  stopper() {
+    console.log('stopper run');
+
+    //cron printer 작업 들어있다.
+    const job = this.schedulerRegistry.getCronJob('printer');
+
+    if (job.running) {
+      job.stop();
+    } else {
+      job.start();
+    }
+  }
+
+  // @Cron('0 * * * * *')
+  async calculateMovieLikeCounts() {
+    await this.movieRepository.query(
+      `update movie m
+        set "likeCount" = (select count(*) from movie_user_like mul
+        where m.id = mul."movieId"
+        and mul."isLike" = true)`,
+    );
+
+    await this.movieRepository.query(
+      `update movie m
+        set "dislikeCount" = (select count(*) from movie_user_like mul
+        where m.id = mul."movieId"
+        and mul."isLike" = false)`,
+    );
+  }
+
+  // @Cron('* * * * * *')
   async eraseOrphan() {
     const files = await readdir(join(process.cwd(), 'public', 'temp'));
     console.log('files', files);
@@ -45,11 +88,5 @@ export class TasksService {
         unlink(join(process.cwd(), 'public', 'temp', file)),
       ),
     );
-
-    // for (let i = 0; i < deleteFileTargets.length; i++) {
-    //   const fileName = deleteFileTargets[i];
-    //
-    //   unlink(join(process.cwd(), 'public', 'temp', fileName));
-    // }
   }
 }
