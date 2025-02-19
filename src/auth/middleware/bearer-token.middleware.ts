@@ -32,10 +32,8 @@ export class BearerTokenMiddleware implements NestMiddleware {
     }
 
     const token = this.validateBearerToken(authHeader);
-    console.log('token', token);
 
     const blockedToken = await this.cacheManager.get(`BLOCKED_TOKEN_${token}`);
-    console.log('blockedToken', blockedToken);
     if (blockedToken) {
       throw new UnauthorizedException('차단된 토큰입니다.');
     }
@@ -66,7 +64,7 @@ export class BearerTokenMiddleware implements NestMiddleware {
         ),
       });
       /**
-       * payload['exp] -> epoch time seconds
+       * payload['exp'] -> epoch time seconds
        */
       const expiryDate = +new Date(payload['exp'] * 1000);
       const now = +Date.now();

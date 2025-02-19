@@ -30,6 +30,7 @@ import { join } from 'path';
 import { MovieUserLike } from './movie/entity/movie-user-like.entity';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -71,7 +72,8 @@ import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
     GenreModule,
     AuthModule,
     UserModule,
-    CacheModule.register({ isGlobal: true }),
+    CacheModule.register({ ttl: 0, isGlobal: true }),
+    ScheduleModule.forRoot({}),
   ], //또다른 모듈, 기능을 이 모듈로 불러들일 때 사용
   exports: [], //이 모듈, 기능을 또다른 모듈로 내보낼 때 사용
   controllers: [],

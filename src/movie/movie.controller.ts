@@ -36,7 +36,7 @@ export class MovieController {
 
   @Get()
   @Public()
-  @Throttle({ count: 5, unit: 'minute' })
+  @Throttle({ count: 1, unit: 'minute' })
   getMovies(@Query() dto: GetMoviesDto, @UserId() userId: number) {
     return this.movieService.findAll(dto, userId);
   }
