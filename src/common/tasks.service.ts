@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Cron, SchedulerRegistry } from '@nestjs/schedule';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { join, parse } from 'path';
 import { readdir, unlink } from 'fs/promises';
 import { Movie } from '../movie/entity/movie.entity';
@@ -13,7 +13,6 @@ export class TasksService {
     @InjectRepository(Movie)
     private readonly movieRepository: Repository<Movie>,
     private readonly schedulerRegistry: SchedulerRegistry,
-    private readonly logger: DefaultLogger,
   ) {}
 
   // @Cron('* * * * * *', { name: 'printer' }) //1초마다 실행
