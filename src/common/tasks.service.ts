@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { SchedulerRegistry } from '@nestjs/schedule';
+import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { join, parse } from 'path';
 import { readdir, unlink } from 'fs/promises';
 import { Movie } from '../movie/entity/movie.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DefaultLogger } from './logger/default.logger';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class TasksService {
@@ -13,11 +13,19 @@ export class TasksService {
     @InjectRepository(Movie)
     private readonly movieRepository: Repository<Movie>,
     private readonly schedulerRegistry: SchedulerRegistry,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
   ) {}
 
-  // @Cron('* * * * * *', { name: 'printer' }) //1초마다 실행
+  // @Cron('*/5 * * * * *', { name: 'printer' }) //1초마다 실행
   printer() {
-    console.log('print every second');
+    const error = new Error('에러 발생!'); // 에러 객체 생성
+
+    this.logger.error('에러단계', error.stack, TasksService.name);
+    this.logger.warn('경고단계', TasksService.name);
+    this.logger.log('로그단계', TasksService.name);
+    this.logger.debug('디버그단계', TasksService.name);
+    this.logger.verbose('버보스단계', TasksService.name);
   }
 
   // @Cron('*/5 * * * * *') //5초마다 실행
