@@ -31,6 +31,8 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
 import { ScheduleModule } from '@nestjs/schedule';
 import { WinstonModule } from 'nest-winston';
+// import * as winston from 'winston';
+import { winstonConfig } from './common/logger/winston.config';
 import * as winston from 'winston';
 
 @Module({
@@ -61,6 +63,9 @@ import * as winston from 'winston';
         database: configService.get<string>(envVariableKeys.dbDatabase),
         entities: [Movie, MovieDetail, Director, Genre, User, MovieUserLike],
         synchronize: true, //코드에 맞게 db를 동기화. 개발할때만 true
+        ssl: {
+          rejectUnauthorized: false,
+        },
       }),
       inject: [ConfigService],
     }),
@@ -75,24 +80,7 @@ import * as winston from 'winston';
     UserModule,
     CacheModule.register({ ttl: 0, isGlobal: true }),
     ScheduleModule.forRoot({}),
-    WinstonModule.forRoot({
-      level: 'debug',
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.colorize({ all: true }),
-            winston.format.printf(
-              ({ timestamp, context, level, message, stack }) => {
-                const logMessage = `${timestamp} ${context} ${level} ${message}`;
-                return stack ? `${logMessage}\n${stack}` : logMessage; // 스택이 있으면 추가
-              },
-            ),
-          ),
-        }),
-        // new winston.transports.File({}),
-      ],
-    }),
+    WinstonModule.forRoot(winstonConfig),
   ], //또다른 모듈, 기능을 이 모듈로 불러들일 때 사용
   exports: [], //이 모듈, 기능을 또다른 모듈로 내보낼 때 사용
   controllers: [],
