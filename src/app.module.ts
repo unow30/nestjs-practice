@@ -31,9 +31,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
 import { ScheduleModule } from '@nestjs/schedule';
 import { WinstonModule } from 'nest-winston';
-// import * as winston from 'winston';
 import { winstonConfig } from './common/logger/winston.config';
-import * as winston from 'winston';
 
 @Module({
   imports: [
