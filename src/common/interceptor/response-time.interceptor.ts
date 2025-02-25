@@ -24,7 +24,7 @@ export class ResponseTimeInterceptor implements NestInterceptor {
 
         // diff 가 너무 크면 요청을 종료할 수 있다.
         // diff 를 일부러 늘린다.
-        if (diff > 1000) {
+        if (diff > 60000) {
           console.log(`[!!!TIMEOUT!!! ${req.method} ${req.path} ${diff}ms]`);
           throw new InternalServerErrorException(
             '시간이 너무 오래 걸렸습니다.',

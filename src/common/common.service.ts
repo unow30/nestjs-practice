@@ -32,7 +32,7 @@ export class CommonService {
     const params = {
       Bucket: this.configService.get<string>(envVariableKeys.bucketName),
       //버킷에 생성될 파일명, 경로
-      Key: `temp/${Uuid()}.mp4`,
+      Key: `public/temp/${Uuid()}.mp4`,
       Expires: expiresIn,
       // 보두가 읽을 수 있음
       ACL: 'public-read',
@@ -44,6 +44,33 @@ export class CommonService {
     } catch (e) {
       console.log(e);
       throw new InternalServerErrorException('S3 Presigned Url error');
+    }
+  }
+
+  async saveMovieToPermanentStorage(filename: string) {
+    try {
+      const bucketName = this.configService.get<string>(
+        envVariableKeys.bucketName,
+      );
+
+      await this.s3
+        .copyObject({
+          Bucket: bucketName,
+          CopySource: `${bucketName}/public/temp/${filename}`,
+          Key: `public/movie/${filename}`,
+          ACL: 'public-read',
+        })
+        .promise();
+
+      await this.s3
+        .deleteObject({
+          Bucket: bucketName,
+          Key: `public/temp/${filename}`,
+        })
+        .promise();
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerErrorException('S3 upload error');
     }
   }
 

@@ -20,6 +20,8 @@ import { rename } from 'fs/promises';
 import { User } from '../user/entities/user.entity';
 import { MovieUserLike } from './entity/movie-user-like.entity';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { ConfigService } from '@nestjs/config';
+import { envVariableKeys } from '../common/const/env.const';
 
 @Injectable()
 export class MovieService {
@@ -39,6 +41,7 @@ export class MovieService {
     private readonly dataSource: DataSource,
     private readonly commonService: CommonService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    private readonly configService: ConfigService,
   ) {}
 
   async findRecent() {
@@ -132,6 +135,23 @@ export class MovieService {
     return movie;
   }
 
+  renameMovieFile(
+    tempFolder: string,
+    movieFolder: string,
+    createMovieDto: CreateMovieDto,
+  ) {
+    if (this.configService.get<string>(envVariableKeys.env) !== 'prod') {
+      return rename(
+        join(process.cwd(), tempFolder, createMovieDto.movieFileName),
+        join(process.cwd(), movieFolder, createMovieDto.movieFileName),
+      );
+    } else {
+      return this.commonService.saveMovieToPermanentStorage(
+        createMovieDto.movieFileName,
+      );
+    }
+  }
+
   async create(
     createMovieDto: CreateMovieDto,
     qr: QueryRunner,
@@ -191,10 +211,12 @@ export class MovieService {
       .add(genres.map((genre) => genre.id));
 
     //트랜잭션에서 에러 발생시 파일 이동이 일어나지 않도록 마지막에 실행
-    await rename(
-      join(process.cwd(), tempFolder, createMovieDto.movieFileName),
-      join(process.cwd(), movieFolder, createMovieDto.movieFileName),
-    );
+    // await rename(
+    //   join(process.cwd(), tempFolder, createMovieDto.movieFileName),
+    //   join(process.cwd(), movieFolder, createMovieDto.movieFileName),
+    // );
+
+    await this.renameMovieFile(tempFolder, movieFolder, createMovieDto);
 
     return qr.manager.findOne(Movie, {
       where: { id: movieId },
