@@ -6,9 +6,19 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CommonService } from './common.service';
 
 @Controller('common')
 export class CommonController {
+  constructor(private readonly commonService: CommonService) {}
+
+  @Post('/presigned-url')
+  async createPresignedUrl() {
+    return {
+      url: await this.commonService.createPresignedUrl(),
+    };
+  }
+
   @Post('video')
   @UseInterceptors(
     FileInterceptor('video', {
