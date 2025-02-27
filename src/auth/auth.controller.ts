@@ -11,15 +11,19 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './strategy/local.strategy';
 import { JwtAuthGuard } from './strategy/jwt.strategy';
 import { Public } from './decorator/public.decorator';
+import { ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger';
+import { Authorization } from './decorator/authorization.decorator';
 
 @Controller('auth')
+@ApiBearerAuth()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @ApiBasicAuth()
   @Post('register')
   //authorization: Basic $token
-  registerUser(@Headers('authorization') token: string) {
+  registerUser(@Authorization() token: string) {
     return this.authService.register(token);
   }
 
@@ -27,10 +31,10 @@ export class AuthController {
    * 직접 구현한 로그인
    * */
   @Public()
+  @ApiBasicAuth()
   @Post('login')
   //authorization: Basic $token
-  async loginUser(@Headers('authorization') token: string) {
-    console.log(token);
+  async loginUser(@Authorization() token: string) {
     return await this.authService.loginUser(token);
   }
 

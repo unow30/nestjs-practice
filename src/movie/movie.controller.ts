@@ -28,15 +28,17 @@ import {
   CacheTTL,
 } from '@nestjs/cache-manager';
 import { Throttle } from '../common/decorator/throttle.decorator';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('movie')
+@ApiBearerAuth()
 @UseInterceptors(ClassSerializerInterceptor) //class transformer를 movie controller에 적용하겠다.
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
   @Get()
   @Public()
-  @Throttle({ count: 1, unit: 'minute' })
+  // @Throttle({ count: 1, unit: 'minute' })
   getMovies(@Query() dto: GetMoviesDto, @UserId() userId: number) {
     return this.movieService.findAll(dto, userId);
   }

@@ -30,6 +30,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schedule": "^5.0.1",
     "@nestjs/serve-static": "^5.0.0",
+    "@nestjs/swagger": "^11.0.5",
     "@nestjs/typeorm": "^11.0.0",
     "aws-sdk": "^2.1692.0",
     "bcrypt": "^5.1.1",

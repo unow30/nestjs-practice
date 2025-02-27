@@ -13,7 +13,6 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    console.log(isPublic);
     //요청에서 user 객체가 존재하는지 확인한다.
     const request = context.switchToHttp().getRequest();
     return !(!request.user || request.user.type !== 'access');
