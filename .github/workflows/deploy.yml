@@ -42,11 +42,11 @@ jobs:
           AWS_REGION: ${{secrets.AWS_REGION}}
         run: |
           aws elasticbeanstalk create-application-version \
-            --application-name "netflex-eb-server"
+            --application-name "db-server"
             --version-label $GITHUB_SHA \
             --source-bundle S3Bucket="nestjs-presigned-url-test-bucket",S3Key="deploy.zip"
           
           aws elasticbeanstalk update-environment \
-            --application-name "netflex-eb-server"
-            --environment-name "Netflex-eb-server-env"
+            --application-name "db-server"
+            --environment-name "Db-server-env"
             --version-label $GITHUB_SHA
