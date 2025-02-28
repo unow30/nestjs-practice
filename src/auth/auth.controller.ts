@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './strategy/local.strategy';
 import { JwtAuthGuard } from './strategy/jwt.strategy';
 import { Public } from './decorator/public.decorator';
-import { ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Authorization } from './decorator/authorization.decorator';
 
 @Controller('auth')
@@ -21,6 +21,11 @@ export class AuthController {
 
   @Public()
   @ApiBasicAuth()
+  @ApiOperation({
+    summary: '유저 회원가입',
+    description:
+      'authorize 버튼 > 새로운 email, password 입력 후 로그인 > 해당 api 실행하면 회원가입 진행',
+  })
   @Post('register')
   //authorization: Basic $token
   registerUser(@Authorization() token: string) {

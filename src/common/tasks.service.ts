@@ -13,19 +13,19 @@ export class TasksService {
     @InjectRepository(Movie)
     private readonly movieRepository: Repository<Movie>,
     private readonly schedulerRegistry: SchedulerRegistry,
-    @Inject(WINSTON_MODULE_NEST_PROVIDER)
-    private readonly logger: LoggerService,
+    // @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    // private readonly logger: LoggerService,
   ) {}
 
   // @Cron('*/5 * * * * *', { name: 'printer' }) //1초마다 실행
   printer() {
     const error = new Error('에러 발생!'); // 에러 객체 생성
 
-    this.logger.error('에러단계', error.stack, TasksService.name);
-    this.logger.warn('경고단계', TasksService.name);
-    this.logger.log('로그단계', TasksService.name);
-    this.logger.debug('디버그단계', TasksService.name);
-    this.logger.verbose('버보스단계', TasksService.name);
+    // this.logger.error('에러단계', error.stack, TasksService.name);
+    // this.logger.warn('경고단계', TasksService.name);
+    // this.logger.log('로그단계', TasksService.name);
+    // this.logger.debug('디버그단계', TasksService.name);
+    // this.logger.verbose('버보스단계', TasksService.name);
   }
 
   // @Cron('*/5 * * * * *') //5초마다 실행
