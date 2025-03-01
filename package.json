@@ -53,9 +53,9 @@
     "winston": "^3.17.0"
   },
   "overrides": {
-    "typescript": "$typescript"
+    "typescript": "^5.7.3"
   },
-"devDependencies": {
+  "devDependencies": {
     "@nestjs/cli": "^10.4.9",
     "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^11.0.10",
