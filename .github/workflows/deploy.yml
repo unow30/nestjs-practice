@@ -20,7 +20,7 @@ jobs:
       - name: Install Dependencies
         run: |
           npm cache clean --force
-          npm i
+          npm install –legacy-peer-deps
 
       - name: Build Project
         run: npm run build
