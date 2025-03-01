@@ -67,7 +67,7 @@ import { winstonConfig } from './common/logger/winston.config';
         synchronize: configService.get<string>(envVariableKeys.env) !== 'prod', //코드에 맞게 db를 동기화. 개발할때만 true
         ...(configService.get<string>(envVariableKeys.env) === 'prod' && {
           //ssl 설정 배포환경에서만 적용
-          //db 연결을 ssl 을 사용하여 암호화
+          //db 연결을 ssl 을 사용하여 암호화a
           ssl: {
             // 자체서명 또는 신뢰할 수 없는 인증서를 허용(개발시만)
             rejectUnauthorized: false,
