@@ -20,9 +20,6 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Install typeorm globally
-        run: npm install -g typeorm
-
       - name: Build Project
         run: npm run build
 

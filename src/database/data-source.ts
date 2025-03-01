@@ -14,5 +14,5 @@ export default new DataSource({
   logging: false,
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/database/migrations/*.js'],
-  migrationsRun: true,
+  // migrationsRun: true,
 });
