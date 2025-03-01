@@ -52,7 +52,10 @@
     "uuid": "^11.1.0",
     "winston": "^3.17.0"
   },
-  "devDependencies": {
+  "overrides": {
+    "typescript": "$typescript"
+  },
+"devDependencies": {
     "@nestjs/cli": "^10.4.9",
     "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^11.0.10",
