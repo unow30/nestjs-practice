@@ -1,9 +1,7 @@
 import {
   BaseEntity,
-  Column,
   JoinTable,
   ManyToMany,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
