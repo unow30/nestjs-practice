@@ -1,1 +1,1 @@
-web: npm install -g typeorm && typeorm migration:run && npm run start:prod
+web: npm run start:prod
