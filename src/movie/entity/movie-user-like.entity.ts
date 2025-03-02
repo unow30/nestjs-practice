@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { BaseTable } from '../../common/entity/base-table.entity';
 import { Movie } from './movie.entity';
-import { User } from '../../user/entities/user.entity';
+import { User } from '../../user/entity/user.entity';
 import { IsBoolean } from 'class-validator';
 
 @Entity()

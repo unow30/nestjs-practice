@@ -5,7 +5,7 @@ import { readdir, unlink } from 'fs/promises';
 import { Movie } from '../movie/entity/movie.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+// import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class TasksService {

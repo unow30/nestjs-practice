@@ -13,10 +13,10 @@ import { MovieDetail } from './movie/entity/movie-detail.entity';
 import { DirectorModule } from './director/director.module';
 import { Director } from './director/entity/director.entity';
 import { GenreModule } from './genre/genre.module';
-import { Genre } from './genre/entities/genre.entity';
+import { Genre } from './genre/entity/genre.entity';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { User } from './user/entities/user.entity';
+import { User } from './user/entity/user.entity';
 import { envVariableKeys } from './common/const/env.const';
 import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
@@ -32,6 +32,9 @@ import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
 import { ScheduleModule } from '@nestjs/schedule';
 import { WinstonModule } from 'nest-winston';
 import { winstonConfig } from './common/logger/winston.config';
+import { ChatModule } from './chat/chat.module';
+import { ChatRoom } from './chat/entity/chat-room.entity';
+import { Chat } from './chat/entity/chat.entity';
 
 @Module({
   imports: [
@@ -63,7 +66,16 @@ import { winstonConfig } from './common/logger/winston.config';
         username: configService.get<string>(envVariableKeys.dbUsername),
         password: configService.get<string>(envVariableKeys.dbPassword),
         database: configService.get<string>(envVariableKeys.dbDatabase),
-        entities: [Movie, MovieDetail, Director, Genre, User, MovieUserLike],
+        entity: [
+          Movie,
+          MovieDetail,
+          Director,
+          Genre,
+          User,
+          MovieUserLike,
+          Chat,
+          ChatRoom,
+        ],
         synchronize: configService.get<string>(envVariableKeys.env) !== 'prod', //코드에 맞게 db를 동기화. 개발할때만 true
         ...(configService.get<string>(envVariableKeys.env) === 'prod' && {
           //ssl 설정 배포환경에서만 적용
@@ -87,7 +99,8 @@ import { winstonConfig } from './common/logger/winston.config';
     UserModule,
     CacheModule.register({ ttl: 0, isGlobal: true }),
     ScheduleModule.forRoot({}),
-    // WinstonModule.forRoot(winstonConfig),
+    ChatModule,
+    WinstonModule.forRoot(winstonConfig),
   ], //또다른 모듈, 기능을 이 모듈로 불러들일 때 사용
   exports: [], //이 모듈, 기능을 또다른 모듈로 내보낼 때 사용
   controllers: [],
