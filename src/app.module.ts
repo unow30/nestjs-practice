@@ -66,7 +66,7 @@ import { Chat } from './chat/entity/chat.entity';
         username: configService.get<string>(envVariableKeys.dbUsername),
         password: configService.get<string>(envVariableKeys.dbPassword),
         database: configService.get<string>(envVariableKeys.dbDatabase),
-        entity: [
+        entities: [
           Movie,
           MovieDetail,
           Director,
