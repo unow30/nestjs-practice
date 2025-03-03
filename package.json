@@ -54,7 +54,7 @@
     "socket.io": "^4.8.1",
     "typeorm": "^0.3.20",
     "uuid": "^11.1.0",
-    "websockets,": "link:@nestjs/websockets,",
+    "websocket": "^1.0.35",
     "winston": "^3.17.0"
   },
   "overrides": {
