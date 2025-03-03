@@ -1,5 +1,6 @@
 import {
   BaseEntity,
+  Entity,
   JoinTable,
   ManyToMany,
   OneToMany,
@@ -8,6 +9,7 @@ import {
 import { Chat } from './chat.entity';
 import { User } from '../../user/entity/user.entity';
 
+@Entity()
 export class ChatRoom extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
