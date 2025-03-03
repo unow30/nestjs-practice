@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
+import { envVariableKeys } from '../common/const/env.const';
 
 dotenv.config();
 
@@ -14,5 +15,12 @@ export default new DataSource({
   logging: false,
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/database/migrations/*.js'],
-  // migrationsRun: true,
+  ...(process.env.ENV === 'prod' && {
+    //ssl 설정 배포환경에서만 적용
+    //db 연결을 ssl 을 사용하여 암호화a
+    ssl: {
+      // 자체서명 또는 신뢰할 수 없는 인증서를 허용(개발시만)
+      rejectUnauthorized: false,
+    },
+  }),
 });
