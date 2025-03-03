@@ -15,10 +15,7 @@ export default new DataSource({
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/database/migrations/*.js'],
   ...(process.env.ENV === 'prod' && {
-    //ssl 설정 배포환경에서만 적용
-    //db 연결을 ssl 을 사용하여 암호화
     ssl: {
-      // 자체서명 또는 신뢰할 수 없는 인증서를 허용(개발시만)
       rejectUnauthorized: false,
     },
   }),
