@@ -1,6 +1,5 @@
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
-import { envVariableKeys } from '../common/const/env.const';
 
 dotenv.config();
 
