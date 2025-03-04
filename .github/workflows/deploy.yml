@@ -91,7 +91,6 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-        continue-on-error: true
 
       - name: Print npm log file
         if: failure()
