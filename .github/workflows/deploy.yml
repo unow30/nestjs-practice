@@ -91,6 +91,11 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+        continue-on-error: true
+
+      - name: Print npm log file
+        if: failure()
+        run: cat /home/runner/.npm/_logs/2025-03-01T06_28_17_911Z-debug-0.log
 
       - name: Build Project
         run: npm run build
