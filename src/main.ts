@@ -6,7 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: false, // 기본 NestJS Logger 비활성화
+    // logger: false, // 기본 NestJS Logger 비활성화 ㅁ
   });
 
   const config = new DocumentBuilder()

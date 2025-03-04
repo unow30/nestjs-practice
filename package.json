@@ -57,9 +57,6 @@
     "websocket": "^1.0.35",
     "winston": "^3.17.0"
   },
-  "overrides": {
-    "typescript": "^5.7.3"
-  },
   "devDependencies": {
     "@nestjs/cli": "^10.4.9",
     "@nestjs/schematics": "^10.2.3",
@@ -85,7 +82,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3"
+    "typescript": "5.7.3"
   },
   "jest": {
     "moduleFileExtensions": [
