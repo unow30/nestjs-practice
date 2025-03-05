@@ -50,5 +50,5 @@ export class User extends BaseTable {
   chats: Chat[];
 
   @ManyToMany(() => ChatRoom, (chatroom) => chatroom.users)
-  chatRooms: Chat[];
+  chatRooms: ChatRoom[];
 }

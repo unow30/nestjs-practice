@@ -97,7 +97,7 @@ import { Chat } from './chat/entity/chat.entity';
     CacheModule.register({ ttl: 0, isGlobal: true }),
     ScheduleModule.forRoot({}),
     ChatModule,
-    WinstonModule.forRoot(winstonConfig),
+    // WinstonModule.forRoot(winstonConfig),
   ], //또다른 모듈, 기능을 이 모듈로 불러들일 때 사용
   exports: [], //이 모듈, 기능을 또다른 모듈로 내보낼 때 사용
   controllers: [],

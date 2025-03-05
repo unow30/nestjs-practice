@@ -110,6 +110,7 @@ export class AuthService {
 
       return payload;
     } catch (error) {
+      console.log(error);
       //error 에 따른 throw 설정 가능
       throw new UnauthorizedException('토큰이 만로되었습니다.');
     }
