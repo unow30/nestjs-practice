@@ -1,4 +1,13 @@
 {
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "overrides": [
+    {
+      "files": ["**/*spec.js", "**/*spec.ts"],
+      "options": {
+        "semi": true,
+        "printWidth": 900
+      }
+    }
+  ]
 }
