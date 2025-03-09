@@ -31,12 +31,12 @@ export class AuthService {
     const expiryDate = +new Date(payload['exp'] * 1000);
     const now = +Date.now();
     const diffInSeconds = (expiryDate - now) / 1000;
-    console.table({
-      expiryDate: expiryDate,
-      now: now,
-      diffInSeconds: diffInSeconds,
-      mathMax: Math.max(diffInSeconds * 1000 * 30, 10),
-    });
+    // console.table({
+    //   expiryDate: expiryDate,
+    //   now: now,
+    //   diffInSeconds: diffInSeconds,
+    //   mathMax: Math.max(diffInSeconds * 1000 * 30, 10),
+    // });
     await this.cacheManager.set(
       tokenKey,
       payload,
