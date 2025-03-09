@@ -44,7 +44,7 @@ describe('DirectorService', () => {
   describe('create', () => {
     it('should create a new director', async () => {
       const createDirectorDto = {
-        name: 'Code Factory',
+        name: 'test',
       };
       jest.spyOn(mockDirectorRepository, 'save').mockResolvedValue(createDirectorDto);
 
@@ -75,7 +75,7 @@ describe('DirectorService', () => {
 
   describe('findOne', () => {
     it('should return a single director by id', async () => {
-      const director = { id: 1, name: 'Code Factory' };
+      const director = { id: 1, name: 'test' };
 
       jest.spyOn(mockDirectorRepository, 'findOne').mockResolvedValue(director as Director);
 
@@ -90,9 +90,9 @@ describe('DirectorService', () => {
 
   describe('update', () => {
     it('should update a director', async () => {
-      const updateDirectorDto = { name: 'code factory' };
-      const existingDirector = { id: 1, name: 'code factory' };
-      const updatedDirector = { id: 1, name: 'code factory 2' };
+      const updateDirectorDto = { name: 'test' };
+      const existingDirector = { id: 1, name: 'test' };
+      const updatedDirector = { id: 1, name: 'test 2' };
 
       jest.spyOn(mockDirectorRepository, 'findOne').mockResolvedValueOnce(existingDirector);
       jest.spyOn(mockDirectorRepository, 'findOne').mockResolvedValueOnce(updatedDirector);
@@ -114,13 +114,13 @@ describe('DirectorService', () => {
     it('should throw NotFoundException if director does not exist', () => {
       jest.spyOn(mockDirectorRepository, 'findOne').mockResolvedValue(null);
 
-      expect(directorService.update(1, { name: 'code factory' })).rejects.toThrow(NotFoundException);
+      expect(directorService.update(1, { name: 'test' })).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('remove', () => {
     it('should remove a director by id', async () => {
-      const director = { id: 1, name: 'code factory' };
+      const director = { id: 1, name: 'test' };
 
       jest.spyOn(mockDirectorRepository, 'findOne').mockResolvedValue(director);
 
