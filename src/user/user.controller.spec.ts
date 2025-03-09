@@ -3,6 +3,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entity/user.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 const mockUserService = {
   create: jest.fn(),
@@ -91,6 +92,35 @@ describe('UserController', () => {
 
       expect(service.findOne).toHaveBeenCalledWith(1);
       expect(result).toEqual(user);
+    });
+  });
+
+  describe('update', () => {
+    it('should update user', async () => {
+      const user = {
+        id: 1,
+        email: 'test@test.ai',
+      };
+      const updateUserDto: UpdateUserDto = {
+        email: 'test@test.ai',
+        password: '1234',
+      };
+
+      jest.spyOn(mockUserService, 'update').mockResolvedValue(user);
+      const result = await controller.update(user.id, updateUserDto);
+
+      expect(service.update).toHaveBeenCalledWith(1, updateUserDto);
+      expect(result).toEqual(user);
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove user', async () => {
+      jest.spyOn(mockUserService, 'remove').mockResolvedValue(1);
+      const result = await controller.remove(1);
+
+      expect(service.remove).toHaveBeenCalledWith(1);
+      expect(result).toEqual(1);
     });
   });
 });
