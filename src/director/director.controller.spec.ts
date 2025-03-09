@@ -76,7 +76,7 @@ describe('DirectorController', () => {
       };
       jest.spyOn(mockDirectorService, 'update').mockResolvedValue(result);
 
-      expect(controller.update(1, updateDirectorDto)).resolves.toEqual(result);
+      await expect(controller.update(1, updateDirectorDto)).resolves.toEqual(result);
       expect(service.update).toHaveBeenCalledWith(1, updateDirectorDto);
     });
   });
@@ -86,7 +86,7 @@ describe('DirectorController', () => {
       const result = 1;
       jest.spyOn(mockDirectorService, 'remove').mockResolvedValue(result);
 
-      expect(controller.remove(1)).resolves.toEqual(result);
+      await expect(controller.remove(1)).resolves.toEqual(result);
       expect(service.remove).toHaveBeenCalledWith(1);
     });
   });
