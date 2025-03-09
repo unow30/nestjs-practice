@@ -40,7 +40,7 @@ describe('AuthController', () => {
   describe('registerUser', () => {
     it('should register a user', () => {
       const token = 'Basic dsivjoxicjvsdf';
-      const result = { id: 1, email: 'test@codefactory.ai' };
+      const result = { id: 1, email: 'test@test.ai' };
 
       jest.spyOn(authService, 'register').mockResolvedValue(result as User);
 

@@ -60,7 +60,7 @@ describe('DirectorService', () => {
       const directors = [
         {
           id: 1,
-          name: 'code factory',
+          name: 'test',
         },
       ];
 

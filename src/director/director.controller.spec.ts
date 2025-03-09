@@ -36,7 +36,7 @@ describe('DirectorController', () => {
 
   describe('findAll', () => {
     it('should call findAll method from DirectorService', () => {
-      const result = [{ id: 1, name: 'codefactory' }];
+      const result = [{ id: 1, name: 'test' }];
       jest.spyOn(mockDirectorService, 'findAll').mockResolvedValue(result);
 
       expect(controller.findAll()).resolves.toEqual(result);
@@ -46,7 +46,7 @@ describe('DirectorController', () => {
 
   describe('findOne', () => {
     it('should call findOne method from DirectorService with correct ID', () => {
-      const result = { id: 1, name: 'codefactory' };
+      const result = { id: 1, name: 'test' };
 
       jest.spyOn(mockDirectorService, 'findOne').mockResolvedValue(result);
 
@@ -57,8 +57,8 @@ describe('DirectorController', () => {
 
   describe('create', () => {
     it('should call create method from DirectorService with correct DTO', () => {
-      const createDirectorDto = { name: 'code factory' };
-      const result = { id: 1, name: 'code factory' };
+      const createDirectorDto = { name: 'test' };
+      const result = { id: 1, name: 'test' };
 
       jest.spyOn(mockDirectorService, 'create').mockResolvedValue(result);
 
@@ -69,10 +69,10 @@ describe('DirectorController', () => {
 
   describe('update', () => {
     it('should call update method from DirectorService with correct ID and DTO', async () => {
-      const updateDirectorDto = { name: 'Code Factory' };
+      const updateDirectorDto = { name: 'test' };
       const result = {
         id: 1,
-        name: 'Code Factory',
+        name: 'test',
       };
       jest.spyOn(mockDirectorService, 'update').mockResolvedValue(result);
 

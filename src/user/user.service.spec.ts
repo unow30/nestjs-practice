@@ -117,7 +117,7 @@ describe('UserService', () => {
   describe('create', () => {
     it('should create a new user and return it', async () => {
       const createUserDto: CreateUserDto = {
-        email: 'test@codefactory.ai',
+        email: 'test@test.ai',
         password: '123123',
       };
       const hashRounds = 10;
@@ -162,7 +162,7 @@ describe('UserService', () => {
   describe('update', () => {
     it('should update a user if it exists and return the updated user', async () => {
       const updateUserDto: UpdateUserDto = {
-        email: 'test@codefactory.ai',
+        email: 'test@test.ai',
         password: '123123',
       };
       const hashRounds = 10;
@@ -183,14 +183,14 @@ describe('UserService', () => {
       expect(result).toEqual({ ...user, password: hashedPassword });
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
       expect(bcrypt.hash).toHaveBeenCalledWith(updateUserDto.password, hashRounds);
-      expect(mockUserRepository.update).toHaveBeenCalledWith(1, { email: 'test@codefactory.ai', password: 'hashashndvizxcjnvkolisadf' });
+      expect(mockUserRepository.update).toHaveBeenCalledWith(1, { email: 'test@test.ai', password: 'hashashndvizxcjnvkolisadf' });
     });
 
     it('should throw a NotFoundException if user to update is not found', async () => {
       jest.spyOn(mockUserRepository, 'findOne').mockResolvedValue(null);
 
       const updateUserDto: UpdateUserDto = {
-        email: 'test@codefactory.ai',
+        email: 'test@test.ai',
         password: '123123',
       };
 
