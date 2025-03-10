@@ -8,11 +8,17 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CommonService } from './common.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 @Controller('common')
 @ApiBearerAuth()
 export class CommonController {
-  constructor(private readonly commonService: CommonService) {}
+  constructor(
+    private readonly commonService: CommonService,
+    @InjectQueue('thumbnail-generation')
+    private readonly thumbnailQueue: Queue,
+  ) {}
 
   @Post('/presigned-url')
   async createPresignedUrl() {
@@ -36,7 +42,22 @@ export class CommonController {
       },
     }),
   )
-  createVideo(@UploadedFile() movie: Express.Multer.File) {
+  async createVideo(@UploadedFile() movie: Express.Multer.File) {
+    await this.thumbnailQueue.add(
+      'thumbnail',
+      {
+        videoId: movie.filename,
+        videoPath: movie.path,
+      },
+      // {
+      //   priority: 1, //낮을수록 우선순위가 높다.
+      //   delay: 100, //ms만큼 기다렸다 실행해라
+      //   attempts: 3, //실패시 n번까지 실행해라
+      //   lifo: true, //queue를 stack처럼 실행한다.
+      //   removeOnComplete: true, //작업 성공시 작업내용을 지운다.
+      //   removeOnFail: true, //작업 실패시 작업내용을 지운다.
+      // },
+    );
     return {
       filename: movie.filename,
     };

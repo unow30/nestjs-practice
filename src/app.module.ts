@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { MovieModule } from './movie/movie.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConditionalModule, ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { Movie } from './movie/entity/movie.entity';
 import { MovieDetail } from './movie/entity/movie-detail.entity';
@@ -35,6 +35,7 @@ import { winstonConfig } from './common/logger/winston.config';
 import { ChatModule } from './chat/chat.module';
 import { ChatRoom } from './chat/entity/chat-room.entity';
 import { Chat } from './chat/entity/chat.entity';
+import { WorkerModule } from './worker/worker.module';
 
 @Module({
   imports: [
@@ -55,6 +56,11 @@ import { Chat } from './chat/entity/chat.entity';
         AWS_ACCESS_KEY_ID: Joi.string().required(),
         AWS_REGION: Joi.string().required(),
         BUCKET_NAME: Joi.string().required(),
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.number().required(),
+        REDIS_USERNAME: Joi.string().required(),
+        REDIS_PASSWORD: Joi.string().required(),
+        REDIS_DB_NAME: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -97,6 +103,10 @@ import { Chat } from './chat/entity/chat.entity';
     CacheModule.register({ ttl: 0, isGlobal: true }),
     ScheduleModule.forRoot({}),
     ChatModule,
+    ConditionalModule.registerWhen(
+      WorkerModule,
+      (env: NodeJS.ProcessEnv) => env['TYPE'] === 'worker',
+    ),
     // WinstonModule.forRoot(winstonConfig),
   ], //또다른 모듈, 기능을 이 모듈로 불러들일 때 사용
   exports: [], //이 모듈, 기능을 또다른 모듈로 내보낼 때 사용
