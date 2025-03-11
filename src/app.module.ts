@@ -36,6 +36,7 @@ import { ChatModule } from './chat/chat.module';
 import { ChatRoom } from './chat/entity/chat-room.entity';
 import { Chat } from './chat/entity/chat.entity';
 import { WorkerModule } from './worker/worker.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -107,6 +108,7 @@ import { WorkerModule } from './worker/worker.module';
       WorkerModule,
       (env: NodeJS.ProcessEnv) => env['TYPE'] === 'worker',
     ),
+    HealthModule,
     // WinstonModule.forRoot(winstonConfig),
   ], //또다른 모듈, 기능을 이 모듈로 불러들일 때 사용
   exports: [], //이 모듈, 기능을 또다른 모듈로 내보낼 때 사용
@@ -146,6 +148,10 @@ export class AppModule implements NestModule {
         {
           path: 'auth/register',
           method: RequestMethod.POST,
+        },
+        {
+          path: 'health/',
+          method: RequestMethod.GET,
         },
       )
       .forRoutes('*');
