@@ -47,6 +47,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           AWS_REGION: ${{secrets.AWS_REGION}}
           BUCKET_NAME: ${{secrets.BUCKET_NAME}}
+          REDIS_HOST: ${{secrets.REDIS_HOST}}
+          REDIS_PORT: ${{secrets.REDIS_PORT}}
+          REDIS_USERNAME: ${{secrets.REDIS_USERNAME}}
+          REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
+          REDIS_DB_NAME: ${{secrets.REDIS_DB_NAME}}
         run: |
           touch test.env
           echo ENV="test" >> test.env
@@ -63,6 +68,11 @@ jobs:
           echo AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" >> test.env
           echo AWS_REGION="$AWS_REGION" >> test.env
           echo BUCKET_NAME="$BUCKET_NAME" >> test.env
+          echo REDIS_HOST="$REDIS_HOST" >> test.env
+          echo REDIS_PORT="$REDIS_PORT" >> test.env
+          echo REDIS_USERNAME="$REDIS_USERNAME" >> test.env
+          echo REDIS_PASSWORD="$REDIS_PASSWORD" >> test.env
+          echo REDIS_DB_NAME="$REDIS_DB_NAME" >> test.env
           echo "test.env created"
           cat test.env
           
@@ -81,6 +91,11 @@ jobs:
           echo AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" >> .env
           echo AWS_REGION="$AWS_REGION" >> .env
           echo BUCKET_NAME="$BUCKET_NAME" >> .env
+          echo REDIS_HOST="$REDIS_HOST" >> .env
+          echo REDIS_PORT="$REDIS_PORT" >> .env
+          echo REDIS_USERNAME="$REDIS_USERNAME" >> .env
+          echo REDIS_PASSWORD="$REDIS_PASSWORD" >> .env
+          echo REDIS_DB_NAME="$REDIS_DB_NAME" >> .env
           echo ".env created"
           cat .env
 
@@ -120,11 +135,11 @@ jobs:
           AWS_REGION: ${{secrets.AWS_REGION}}
         run: |
           aws elasticbeanstalk create-application-version \
-            --application-name "eb-test-01" \
+            --application-name "eb_test_app" \
             --version-label $GITHUB_SHA \
             --source-bundle S3Bucket="nestjs-presigned-url-test-bucket",S3Key="deploy.zip"
           
           aws elasticbeanstalk update-environment \
-            --application-name "eb-test-01" \
-            --environment-name "Eb-test-01-env" \
+            --application-name "eb_test_app" \
+            --environment-name "Ebtestapp-env" \
             --version-label $GITHUB_SHA
