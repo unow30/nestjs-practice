@@ -7,7 +7,12 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CommonService } from './common.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 
@@ -21,13 +26,42 @@ export class CommonController {
   ) {}
 
   @Post('/presigned-url')
+  @ApiOperation({
+    summary: 'presigned url 생성',
+    description: `
+  ## 5분간 지속되는 s3 업로드 링크를 생성한다.
+  ## 업로드 완료시 파일은 bucket-name/temp/filename(uuid)으로 저장한다.
+  ## 영상 파일을 바이너리 형식으로 body에 담은 다음 해당 링크를 put 요청으로 실행한다.
+  ## 성공시 1 true 반환하면 filename을 post movie movieFileName에 입력한다.
+    `,
+  })
   async createPresignedUrl() {
-    return {
-      url: await this.commonService.createPresignedUrl(),
-    };
+    return await this.commonService.createPresignedUrl();
   }
 
   @Post('video')
+  @ApiOperation({
+    summary: '서버 폴더에 비디오 파일 업로드',
+    description: `
+  ## multer 업로드 테스트용
+  ## video/mp4만 업로드한다.
+  ## 업로드시 public/temp/filename(uuid)로 저장된다.
+  ## 썸네일은 bullmq의 Queue 기능으로 다른 서버에서 추출한다.
+    `,
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Upload a file',
+    schema: {
+      type: 'object',
+      properties: {
+        video: {
+          type: 'string',
+          format: 'binary', // 파일 형식 명시
+        },
+      },
+    },
+  })
   @UseInterceptors(
     FileInterceptor('video', {
       limits: { fileSize: 200000000 },

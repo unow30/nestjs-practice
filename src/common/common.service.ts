@@ -29,19 +29,21 @@ export class CommonService {
   }
 
   async createPresignedUrl(expiresIn = 300) {
+    const filename = `${Uuid()}.mp4`;
     const params = {
       Bucket: this.configService.get<string>(envVariableKeys.bucketName),
       //버킷에 생성될 파일명, 경로
-      Key: `public/temp/${Uuid()}.mp4`,
+      Key: `public/temp/${filename}`,
       // 보두가 읽을 수 있음
       ACL: ObjectCannedACL.public_read,
+      ContentType: 'video/mp4', // MIME 타입 명시
     };
 
     try {
       const url = await getSignedUrl(this.s3, new PutObjectCommand(params), {
         expiresIn,
       });
-      return url;
+      return { filename: filename, url: url };
     } catch (e) {
       console.log(e);
       throw new InternalServerErrorException('S3 Presigned Url error');
@@ -105,14 +107,20 @@ export class CommonService {
 
       const { values } = cursorObj;
 
-      // (column1, column2, column3) > (:value1, :value2, :value3)
       const columns = Object.keys(values);
+      // > : <
       const comparisonOperator = order.some((o) => o.endsWith('DESC'))
         ? '<'
         : '>';
+
+      //(column1, column2, column3)
       const whereConditions = columns.map((c) => `${qb.alias}.${c}`).join(',');
+
+      //(:value1, :value2, :value3)
       const whereParams = columns.map((c) => `:${c}`).join(',');
+
       qb.where(
+        // (column1, column2, column3) > (:value1, :value2, :value3)
         `(${whereConditions}) ${comparisonOperator} (${whereParams})`,
         values,
       );

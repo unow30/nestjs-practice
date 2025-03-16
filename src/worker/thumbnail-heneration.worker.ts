@@ -11,12 +11,13 @@ export class ThumbnailGenerationProcess extends WorkerHost {
     console.log(job.data);
 
     console.log(`영상 트랜스코딩 중 ID:${videoId}`);
+    const filename = videoId.split('.')[0];
     const outputDirectory = join(cwd(), 'public', 'thumbnail');
 
     ffmpgeFluent(videoPath)
       .screenshots({
         count: 1,
-        filename: `${videoId}.png`,
+        filename: `${filename}.png`,
         folder: outputDirectory,
         size: '320x240',
       })

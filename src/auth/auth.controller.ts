@@ -1,7 +1,6 @@
 import {
   Controller,
   Post,
-  Headers,
   UseGuards,
   Request,
   Get,
@@ -13,6 +12,7 @@ import { JwtAuthGuard } from './strategy/jwt.strategy';
 import { Public } from './decorator/public.decorator';
 import { ApiBasicAuth, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Authorization } from './decorator/authorization.decorator';
+import { ApiPropertyResponse } from '../document/swagger-response';
 
 @Controller('auth')
 @ApiBearerAuth()
@@ -23,8 +23,44 @@ export class AuthController {
   @ApiBasicAuth()
   @ApiOperation({
     summary: '유저 회원가입',
-    description:
-      'authorize 버튼 > 새로운 email, password 입력 후 로그인 > 해당 api 실행하면 회원가입 진행',
+    description: `
+  ## email, password를 base 64 encoding 후 header authorizaion으로 보낸다.
+  ## authorize 버튼 > 새로운 email, password 입력 후 로그인 버튼 클릭시 header Authorization 생성 
+  ## 해당 api 실행하면 회원가입 진행`,
+  })
+  @ApiPropertyResponse({
+    properties: {
+      createdAt: {
+        type: 'string',
+        format: 'date-time',
+        description: '생성시간',
+      },
+      updatedAt: {
+        type: 'string',
+        format: 'date-time',
+        description: '변경시간',
+      },
+      version: {
+        type: 'number',
+        description: '변경시 숫자 count',
+      },
+      id: {
+        type: 'number',
+        description: '유저 id',
+      },
+      email: {
+        type: 'string',
+        description: '유저 email',
+      },
+      password: {
+        type: 'string',
+        description: '비밀번호(암호화)',
+      },
+      role: {
+        type: 'string',
+        description: '0: 관리자, 1:구독유저 2: 유저',
+      },
+    },
   })
   @Post('register')
   //authorization: Basic $token
@@ -37,12 +73,41 @@ export class AuthController {
    * */
   @Public()
   @ApiBasicAuth()
+  @ApiOperation({
+    summary: '유저 로그인',
+    description: `
+  ## email, password를 base 64 encoding 후 header authorizaion으로 보낸다.
+  ## authorize 버튼 > 새로운 email, password 입력 후 로그인 버튼 클릭
+  ## 해당 api 실행하면 토큰 생성
+  ## authorize 버튼 > bearer (http, Bearer)에 acceseToken 입력 후 로그인
+ `,
+  })
+  @ApiPropertyResponse({
+    properties: {
+      refreshToken: {
+        type: 'string',
+        description: '리프레시 토큰, 24시간 지속',
+      },
+      accessToken: {
+        type: 'string',
+        description: '엑세스 토큰, 300초(5분) 지속',
+      },
+    },
+  })
   @Post('login')
   //authorization: Basic $token
   async loginUser(@Authorization() token: string) {
     return await this.authService.loginUser(token);
   }
 
+  @ApiOperation({
+    summary: '유저 로그인',
+    description: `
+  ### email, password를 base 64 encoding 후 header authorizaion으로 보낸다.
+  ### authorize 버튼 > 새로운 email, password 입력 후 로그인 버튼 클릭
+  ### 해당 api 실행하면 토큰 생성
+  ### authorize 버튼 > bearer (http, Bearer)에 acceseToken 입력 후 로그인`,
+  })
   @Post('token/block')
   blockToken(@Body('token') token: string) {
     return this.authService.tokenBlock(token);

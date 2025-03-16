@@ -57,7 +57,7 @@ export class MovieService {
       take: 10,
     });
 
-    await this.cacheManager.set('MOVIE_RECENT', data);
+    await this.cacheManager.set('MOVIE_RECENT', data, 300000);
     return data;
   }
 
@@ -118,7 +118,7 @@ export class MovieService {
     return { data, nextCursor, count };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, userId: number) {
     const movie = await this.movieRepository
       .createQueryBuilder('movie')
       .leftJoinAndSelect('movie.director', 'director')
@@ -132,9 +132,40 @@ export class MovieService {
       throw new NotFoundException('존재하지 않는 id의 영화입니다.');
     }
 
+    const likeUser = await this.movieUserLikeRepository
+      .createQueryBuilder('like')
+      .select('like.isLike')
+      .where('like.movie.id = :id', { id: movie.id })
+      .andWhere('like.user.id = :userId', { userId: userId })
+      .getOne();
+
+    if (likeUser) {
+      movie['isLike'] = likeUser['isLike'];
+    }
+
+    const myPick = await this.cacheManager.get(`my-pick${userId}`);
+
+    const myPickArr: Movie[] = Array.isArray(myPick) ? myPick : [];
+
+    const movieExists = myPickArr.some((m) => m.id === movie.id);
+
+    if (!movieExists) {
+      await this.cacheManager.set(
+        `my-pick${userId}`,
+        [...myPickArr, movie],
+        300000,
+      );
+    } else {
+      await this.cacheManager.set(`my-pick${userId}`, myPickArr, 300000);
+    }
+
     return movie;
   }
 
+  /**
+   * - env dev: public 폴더의 파일경로를 변경하면서 db에 파일명 저장
+   * - env prod: pre signed url 로 저장한 파일경로를 변경하면서 db에 파일명 저장
+   * */
   renameMovieFile(
     tempFolder: string,
     movieFolder: string,
