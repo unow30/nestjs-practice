@@ -21,6 +21,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { UpdateLocalFilePathDto } from '../movie/dto/update-local-filepath.dto';
 import { Request } from 'express';
 import { MulterService } from './multer.service';
+import { join } from 'path';
 
 @Controller('common')
 @ApiBearerAuth()
@@ -28,8 +29,10 @@ export class CommonController {
   constructor(
     private readonly commonService: CommonService,
     private readonly multerService: MulterService,
-    @InjectQueue('thumbnail-generation')
-    private readonly thumbnailQueue: Queue,
+    // @InjectQueue('thumbnail-generation')
+    // private readonly thumbnailQueue: Queue,
+    @InjectQueue('watermark-generation')
+    private readonly watermarkQueue: Queue,
   ) {}
 
   @Post('/presigned-url')
@@ -74,7 +77,8 @@ export class CommonController {
   })
   @UseInterceptors(
     FileInterceptor('video', {
-      limits: { fileSize: 50000000 },
+      // limits: { fileSize: 50000000 },
+      limits: { fileSize: 5000000000 },
       fileFilter(req, file, callback) {
         if (file.mimetype !== 'video/mp4') {
           return callback(
@@ -87,6 +91,17 @@ export class CommonController {
     }),
   )
   async createVideo(@UploadedFile() movie: Express.Multer.File) {
+    await this.watermarkQueue.add('watermark', {
+      videoId: movie.filename,
+      videoPath: movie.path,
+      watermarkPath: join(
+        process.cwd(),
+        'public',
+        'watermark',
+        'watermark1.png',
+      ),
+    });
+
     // await this.thumbnailQueue.add(
     //   'thumbnail',
     //   {

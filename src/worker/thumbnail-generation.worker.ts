@@ -1,7 +1,6 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { join } from 'path';
-import { cwd } from 'process';
 import * as ffmpgeFluent from 'fluent-ffmpeg';
 
 @Processor({ name: 'thumbnail-generation' })
@@ -12,7 +11,7 @@ export class ThumbnailGenerationProcess extends WorkerHost {
 
     console.log(`영상 트랜스코딩 중 ID:${videoId}`);
     const filename = videoId.split('.')[0];
-    const outputDirectory = join(cwd(), 'public', 'thumbnail');
+    const outputDirectory = join(process.cwd(), 'public', 'thumbnail');
 
     ffmpgeFluent(videoPath)
       .screenshots({

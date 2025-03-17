@@ -12,6 +12,7 @@ import { DefaultLogger } from './logger/default.logger';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 import { envVariableKeys } from './const/env.const';
+import { MulterService } from './multer.service';
 
 @Module({
   imports: [
@@ -31,25 +32,19 @@ import { envVariableKeys } from './const/env.const';
         },
       }),
     }),
-    //메시지 큐(reids)를 연결하기
-    BullModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        connection: {
-          host: configService.get<string>(envVariableKeys.redisHost),
-          port: configService.get<number>(envVariableKeys.redisPort),
-          username: configService.get<string>(envVariableKeys.redisUsername),
-          password: configService.get<string>(envVariableKeys.redisPassword),
-        },
-      }),
-    }),
-    //bullmq에 등록할 프로세스 세팅
-    BullModule.registerQueue({
-      name: 'thumbnail-generation',
-    }),
+    //bullmq에 등록할 프로세스 작업명 세팅
+    //사용할 서비스에서 등록해야 한다.
+    BullModule.registerQueue(
+      {
+        name: 'thumbnail-generation',
+      },
+      {
+        name: 'watermark-generation',
+      },
+    ),
   ],
   controllers: [CommonController],
-  providers: [CommonService, TasksService, DefaultLogger],
+  providers: [CommonService, TasksService, MulterService, DefaultLogger],
   exports: [CommonService, DefaultLogger],
 })
 export class CommonModule {}
