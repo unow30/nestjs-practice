@@ -162,27 +162,6 @@ export class MovieService {
     return movie;
   }
 
-  /**
-   * - env dev: public 폴더의 파일경로를 변경하면서 db에 파일명 저장
-   * - env prod: pre signed url 로 저장한 파일경로를 변경하면서 db에 파일명 저장
-   * */
-  renameMovieFile(
-    tempFolder: string,
-    movieFolder: string,
-    createMovieDto: CreateMovieDto,
-  ) {
-    if (this.configService.get<string>(envVariableKeys.env) !== 'prod') {
-      return rename(
-        join(process.cwd(), tempFolder, createMovieDto.movieFileName),
-        join(process.cwd(), movieFolder, createMovieDto.movieFileName),
-      );
-    } else {
-      return this.commonService.saveMovieToPermanentStorage(
-        createMovieDto.movieFileName,
-      );
-    }
-  }
-
   async create(
     createMovieDto: CreateMovieDto,
     qr: QueryRunner,
@@ -217,9 +196,6 @@ export class MovieService {
 
     const movieDetailId = movieDetail.identifiers[0].id;
 
-    const movieFolder = join('public', 'movie');
-    const tempFolder = join('public', 'temp');
-
     const movie = await qr.manager
       .createQueryBuilder()
       .insert()
@@ -229,7 +205,7 @@ export class MovieService {
         movieDetail: { id: movieDetailId },
         director,
         creator: { id: userId },
-        movieFileName: join(movieFolder, createMovieDto.movieFileName),
+        movieFileName: createMovieDto.movieFileName,
       })
       .execute();
 
@@ -241,13 +217,9 @@ export class MovieService {
       .of(movieId)
       .add(genres.map((genre) => genre.id));
 
-    //트랜잭션에서 에러 발생시 파일 이동이 일어나지 않도록 마지막에 실행
-    // await rename(
-    //   join(process.cwd(), tempFolder, createMovieDto.movieFileName),
-    //   join(process.cwd(), movieFolder, createMovieDto.movieFileName),
-    // );
-
-    await this.renameMovieFile(tempFolder, movieFolder, createMovieDto);
+    await this.commonService.saveMovieToPermanentStorage(
+      createMovieDto.movieFileName,
+    );
 
     return qr.manager.findOne(Movie, {
       where: { id: movieId },

@@ -41,7 +41,7 @@ export class BearerTokenMiddleware implements NestMiddleware {
     const tokenKey = `TOKEN_${token}`;
     const cachedPayload = await this.cacheManager.get(tokenKey);
 
-    console.log('cachedPayload', cachedPayload);
+    // console.log('cachedPayload', cachedPayload);
     if (cachedPayload) {
       req['user'] = cachedPayload;
       return next();
