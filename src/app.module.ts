@@ -38,6 +38,7 @@ import { Chat } from './chat/entity/chat.entity';
 import { WorkerModule } from './worker/worker.module';
 import { HealthModule } from './health/health.module';
 import { BullModule } from '@nestjs/bullmq';
+import { FfmpegModule } from './ffmpeg/ffmpeg.module';
 
 @Module({
   imports: [
@@ -122,6 +123,7 @@ import { BullModule } from '@nestjs/bullmq';
       (env: NodeJS.ProcessEnv) => env['TYPE'] === 'worker',
     ),
     HealthModule,
+    FfmpegModule,
     // WinstonModule.forRoot(winstonConfig),
   ], //또다른 모듈, 기능을 이 모듈로 불러들일 때 사용
   exports: [], //이 모듈, 기능을 또다른 모듈로 내보낼 때 사용
