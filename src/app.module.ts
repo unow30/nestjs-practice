@@ -37,6 +37,7 @@ import { ChatRoom } from './chat/entity/chat-room.entity';
 import { Chat } from './chat/entity/chat.entity';
 import { WorkerModule } from './worker/worker.module';
 import { HealthModule } from './health/health.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -104,6 +105,18 @@ import { HealthModule } from './health/health.module';
     CacheModule.register({ ttl: 0, isGlobal: true }),
     ScheduleModule.forRoot({}),
     ChatModule,
+    //메시지 큐(redis)를 연결하기
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>(envVariableKeys.redisHost),
+          port: configService.get<number>(envVariableKeys.redisPort),
+          username: configService.get<string>(envVariableKeys.redisUsername),
+          password: configService.get<string>(envVariableKeys.redisPassword),
+        },
+      }),
+    }),
     ConditionalModule.registerWhen(
       WorkerModule,
       (env: NodeJS.ProcessEnv) => env['TYPE'] === 'worker',

@@ -10,8 +10,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Movie } from '../movie/entity/movie.entity';
 import { DefaultLogger } from './logger/default.logger';
 import { BullModule } from '@nestjs/bullmq';
-import { ConfigService } from '@nestjs/config';
-import { envVariableKeys } from './const/env.const';
 import { MulterService } from './multer.service';
 
 @Module({
