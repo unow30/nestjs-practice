@@ -2,6 +2,7 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { join } from 'path';
 import * as ffmpegFluent from 'fluent-ffmpeg';
+import { rename } from 'fs/promises';
 
 // 비율별 설정 매핑 객체
 const RATIO_CONFIG = {
@@ -24,10 +25,10 @@ const RATIO_CONFIG = {
 @Processor({ name: 'watermark-generation' })
 export class WatermarkGenerationProcess extends WorkerHost {
   async process(job: Job) {
-    const { videoPath, videoId, watermarkPath } = job.data;
-    const outputDir = join(process.cwd(), 'public', 'watermarked');
+    const { videoId, videoPath, watermarkPath } = job.data;
+    const outputDir = join(process.cwd(), 'public', 'temp');
     // const outputDir = join(process.cwd(), 'public', 'movie');
-    const outputFile = `${videoId.split('.')[0]}_watermarked.mp4`;
+    const outputFile = `${videoId.split('.')[0]}_wm_processing.mp4`;
 
     try {
       const { width, height } = await this.getVideoDimensions(videoPath);
@@ -76,8 +77,13 @@ export class WatermarkGenerationProcess extends WorkerHost {
           console.log('end stream');
           console.log('진행률: 100%');
           console.log(`처리 프레임: ${lastFrameCount}`);
-
-          return resolve({ outputPath });
+          
+          // 파일 이름 변경
+          const finalOutputPath = outputPath.replace('_wm_processing', '_wm');
+          rename(outputPath, finalOutputPath)
+            .then(() => resolve({ outputPath: finalOutputPath }))
+            .catch(reject);
+          
         })
         .on('error', reject)
         .run();

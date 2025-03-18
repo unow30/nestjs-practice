@@ -125,8 +125,12 @@ export class CommonController {
   @ApiOperation({
     summary: '정적파일 배포상태로 변경',
     description: `
-  ## serve-static으로 파일을 읽기 위해 지정한 경로로 업로드 파일 이동  
-  ### 이동 성공시 해당 경로를 get 요청하여 파일 확인 가능 
+  ## serve-static으로 파일을 읽기 위해 지정한 경로로 업로드 파일 이동
+  ## 원본영상(temp)과 워터마크(watermarked)파일을 파일명과 동일한 폴더에 담아 movie 폴더로 이동한다.
+  ### public/movie/uuid/origin.mp4
+  ### public/movie/uuid/wm.mp4   
+  ### 워터마크 파일이 완전히 생성되어야 이동 가능하다.
+  ### 이동 성공시 해당 경로를 서버에 get 요청하여 파일 확인 가능
   ### post multer/video 응답값인 filename을 입력한다.
     `,
   })
