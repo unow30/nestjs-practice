@@ -77,8 +77,7 @@ export class CommonController {
   })
   @UseInterceptors(
     FileInterceptor('video', {
-      // limits: { fileSize: 50000000 },
-      limits: { fileSize: 5000000000 },
+      limits: { fileSize: 100000000 },
       fileFilter(req, file, callback) {
         if (file.mimetype !== 'video/mp4') {
           return callback(
