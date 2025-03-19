@@ -19,10 +19,9 @@ export class CursorPaginationService {
   ) {
     const { cursor, take, order: initialOrder } = dto;
     let order = initialOrder;
-    console.log('order', order);
+
     if (cursor) {
       const cursorObj = this.parseCursor(cursor);
-      console.log('cursorObj', cursorObj);
       order = cursorObj.order;
       this.applyCursorConditions(qb, cursorObj, qb.alias);
     }

@@ -16,8 +16,8 @@ export class BaseTable {
   updatedAt: Date;
 
   // 변경횟수(생성시 1)
-  @Exclude()
   @VersionColumn()
+  @Exclude()
   @ApiHideProperty()
   version: number;
 }
