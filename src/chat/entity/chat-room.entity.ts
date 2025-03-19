@@ -9,7 +9,6 @@ import {
 import { Chat } from './chat.entity';
 import { User } from '../../user/entity/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { Movie } from '../../movie/entity/movie.entity';
 
 @Entity()
 export class ChatRoom extends BaseEntity {

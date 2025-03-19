@@ -15,13 +15,11 @@ import { Director } from '../director/entity/director.entity';
 import { Genre } from '../genre/entity/genre.entity';
 import { GetMoviesDto } from './dto/get-movies.dto';
 import { CommonService } from '../common/common.service';
-import { join } from 'path';
-import { rename } from 'fs/promises';
 import { User } from '../user/entity/user.entity';
 import { MovieUserLike } from './entity/movie-user-like.entity';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { ConfigService } from '@nestjs/config';
-import { envVariableKeys } from '../common/const/env.const';
+import { CursorPaginationService } from '../common/cursor-pagination.service';
 
 @Injectable()
 export class MovieService {
@@ -40,8 +38,8 @@ export class MovieService {
     private readonly movieUserLikeRepository: Repository<MovieUserLike>,
     private readonly dataSource: DataSource,
     private readonly commonService: CommonService,
+    private readonly cursorPaginationService: CursorPaginationService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
-    private readonly configService: ConfigService,
   ) {}
 
   async findRecent() {
@@ -74,9 +72,11 @@ export class MovieService {
       qb.where('movie.title Like :title', { title: `%${title}%` });
     }
 
-    // this.commonService.applyPagePaginationParamsToQb(qb, dto);
     const { nextCursor } =
-      await this.commonService.applyCursorPaginationParamsToQb(qb, dto);
+      await this.cursorPaginationService.applyCursorPaginationParamsToQb(
+        qb,
+        dto,
+      );
 
     // eslint-disable-next-line prefer-const
     let [data, count] = await qb.getManyAndCount();

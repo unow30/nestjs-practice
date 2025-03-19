@@ -1,4 +1,4 @@
-import { IsArray, IsIn, IsInt, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsInt, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 
@@ -18,7 +18,7 @@ export class CursorPaginationDto {
   })
   @IsOptional()
   @ApiProperty({
-    description: `내림차순, 오름차순 정렬. 칼럼 중복 정렬 가능`,
+    description: `내림차순, 오름차순 정렬. 다수의 칼럼 중복 정렬 가능.`,
     example: ['id_DESC'],
   })
   // swagger 입력값이 한개면 문자열로 인식한다. transform 으로 입력값을 리스트화
