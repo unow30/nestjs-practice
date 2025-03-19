@@ -12,7 +12,8 @@ import { JwtAuthGuard } from './strategy/jwt.strategy';
 import { Public } from './decorator/public.decorator';
 import { ApiBasicAuth, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Authorization } from './decorator/authorization.decorator';
-import { ApiPropertyResponse } from '../document/swagger-response';
+import { ApiPropertyResponse } from '../document/swagger-custom';
+import { ApiRegisterUser } from '../document/decorator/auth/auth-api.decorator';
 
 @Controller('auth')
 @ApiBearerAuth()
@@ -21,47 +22,7 @@ export class AuthController {
 
   @Public()
   @ApiBasicAuth()
-  @ApiOperation({
-    summary: '유저 회원가입',
-    description: `
-  ## email, password를 base 64 encoding 후 header authorizaion으로 보낸다.
-  ## authorize 버튼 > 새로운 email, password 입력 후 로그인 버튼 클릭시 header Authorization 생성 
-  ## 해당 api 실행하면 회원가입 진행`,
-  })
-  @ApiPropertyResponse({
-    properties: {
-      createdAt: {
-        type: 'string',
-        format: 'date-time',
-        description: '생성시간',
-      },
-      updatedAt: {
-        type: 'string',
-        format: 'date-time',
-        description: '변경시간',
-      },
-      version: {
-        type: 'number',
-        description: '변경시 숫자 count',
-      },
-      id: {
-        type: 'number',
-        description: '유저 id',
-      },
-      email: {
-        type: 'string',
-        description: '유저 email',
-      },
-      password: {
-        type: 'string',
-        description: '비밀번호(암호화)',
-      },
-      role: {
-        type: 'string',
-        description: '0: 관리자, 1:구독유저 2: 유저',
-      },
-    },
-  })
+  @ApiRegisterUser()
   @Post('register')
   //authorization: Basic $token
   registerUser(@Authorization() token: string) {

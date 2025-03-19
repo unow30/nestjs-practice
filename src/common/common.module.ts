@@ -11,6 +11,7 @@ import { Movie } from '../movie/entity/movie.entity';
 import { DefaultLogger } from './logger/default.logger';
 import { BullModule } from '@nestjs/bullmq';
 import { MulterService } from './multer.service';
+import { CursorPaginationService } from './cursor-pagination.service';
 
 @Module({
   imports: [
@@ -42,7 +43,13 @@ import { MulterService } from './multer.service';
     ),
   ],
   controllers: [CommonController],
-  providers: [CommonService, TasksService, MulterService, DefaultLogger],
-  exports: [CommonService, DefaultLogger],
+  providers: [
+    CommonService,
+    TasksService,
+    MulterService,
+    CursorPaginationService,
+    DefaultLogger,
+  ],
+  exports: [CommonService, DefaultLogger, CursorPaginationService],
 })
 export class CommonModule {}

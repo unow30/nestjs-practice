@@ -16,6 +16,7 @@ import { Genre } from '../../genre/entity/genre.entity';
 import { Transform } from 'class-transformer';
 import { User } from '../../user/entity/user.entity';
 import { MovieUserLike } from './movie-user-like.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 /// manyToOne Director -> 감독은 여러개의 영화를 만들 수 있음
 /// oneToMany MovieDetail ->영화는 하나의 상세 내용을 가질 수 있음
@@ -24,28 +25,37 @@ import { MovieUserLike } from './movie-user-like.entity';
 @Entity()
 export class Movie extends BaseTable {
   @PrimaryGeneratedColumn()
+  @ApiProperty({ description: '영화 아이디' })
   id: number;
 
   @ManyToOne(() => User, (user) => user.createdMovies)
+  @ApiProperty({
+    type: () => User,
+    description: '영화 생성(업로드)자. 관리자 권한만 영화를 생성(업로드)한다.',
+  })
   creator: User;
 
   @Column({
     unique: true,
   })
+  @ApiProperty({ description: '영화 제목, 고유제목' })
   title: string;
 
   @ManyToMany(() => Genre, (genre) => genre.movies)
   @JoinTable()
+  @ApiProperty({ type: () => [Genre], description: '영화 장르' })
   genres: Genre[];
 
   @Column({
     default: 0,
   })
+  @ApiProperty({ description: '좋아요 개수(미적용)' })
   likeCount: number;
 
   @Column({
     default: 0,
   })
+  @ApiProperty({ description: '싫어요 개수(미적용)' })
   dislikeCount: number;
 
   @OneToOne(() => MovieDetail, (movieDetail) => movieDetail.id, {
@@ -53,12 +63,14 @@ export class Movie extends BaseTable {
     nullable: false,
   })
   @JoinColumn()
+  @ApiProperty({ type: () => MovieDetail, description: '영화 상세내용' })
   movieDetail: MovieDetail;
 
   @ManyToOne(() => Director, (director) => director.id, {
     cascade: true,
     nullable: false,
   })
+  @ApiProperty({ type: () => Director, description: '영화 감독' })
   director: Director;
 
   @Column()
@@ -67,8 +79,13 @@ export class Movie extends BaseTable {
       ? `https://${process.env.BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${value}`
       : `http://localhost:3000/${value}`,
   )
+  @ApiProperty({ description: '영화 파일명:uuid' })
   movieFileName: string;
 
   @OneToMany(() => MovieUserLike, (mul) => mul.movie)
+  @ApiProperty({
+    type: () => [MovieUserLike],
+    description: '영화 좋아요 사용자 목록',
+  })
   likedUsers: MovieUserLike[];
 }
