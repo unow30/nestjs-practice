@@ -38,6 +38,7 @@ import {
   ApiPostMovie,
   ApiGetMovies,
 } from '../document/decorator/movie/movie-api.decorator';
+import { MovieListResponseDto } from './dto/response/movie-response.dto';
 
 @Controller('movie')
 @ApiBearerAuth()
@@ -49,7 +50,10 @@ export class MovieController {
   @Public()
   @ApiGetMovies()
   // @Throttle({ count: 1, unit: 'minute' })
-  getMovies(@Query() dto: GetMoviesDto, @UserId() userId: number) {
+  getMovies(
+    @Query() dto: GetMoviesDto,
+    @UserId() userId: number,
+  ): Promise<MovieListResponseDto> {
     return this.movieService.findAll(dto, userId);
   }
 

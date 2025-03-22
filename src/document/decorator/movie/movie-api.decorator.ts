@@ -1,6 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 import { Movie } from '../../../movie/entity/movie.entity';
+import { MovieListResponseDto } from '../../../movie/dto/response/movie-response.dto';
 
 export function ApiGetMovieRecent() {
   return applyDecorators(
@@ -251,23 +252,7 @@ export function ApiGetMovies() {
     ApiResponse({
       status: 200,
       description: '영화 리스트',
-      schema: {
-        type: 'object',
-        properties: {
-          data: {
-            type: 'array',
-            items: { $ref: getSchemaPath(Movie) },
-          },
-          nextCursor: {
-            type: 'string',
-            description: '다음 페이지를 위한 커서값',
-          },
-          count: {
-            type: 'number',
-            description: '전체 영화 수',
-          },
-        },
-      },
+      type: MovieListResponseDto,
     }),
   );
 }

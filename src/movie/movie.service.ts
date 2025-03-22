@@ -17,9 +17,13 @@ import { GetMoviesDto } from './dto/get-movies.dto';
 import { CommonService } from '../common/common.service';
 import { User } from '../user/entity/user.entity';
 import { MovieUserLike } from './entity/movie-user-like.entity';
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { ConfigService } from '@nestjs/config';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CursorPaginationService } from '../common/cursor-pagination.service';
+import {
+  MovieListResponseDto,
+  MovieResponseDto,
+} from './dto/response/movie-response.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class MovieService {
@@ -56,10 +60,14 @@ export class MovieService {
     });
 
     await this.cacheManager.set('MOVIE_RECENT', data, 300000);
+
     return data;
   }
 
-  async findAll(dto: GetMoviesDto, userId: number) {
+  async findAll(
+    dto: GetMoviesDto,
+    userId: number,
+  ): Promise<MovieListResponseDto> {
     const { title } = dto;
     const qb = this.movieRepository
       .createQueryBuilder('movie')
@@ -79,44 +87,46 @@ export class MovieService {
     // eslint-disable-next-line prefer-const
     let [data, count] = await qb.getManyAndCount();
 
-    // if (userId) {
-    //   const movieIds = data.map((movie) => movie.id);
-    //
-    //   const likeMovies =
-    //     movieIds.length < 1
-    //       ? []
-    //       : await this.movieUserLikeRepository
-    //           .createQueryBuilder('mul')
-    //           .leftJoinAndSelect('mul.user', 'user')
-    //           .leftJoinAndSelect('mul.movie', 'movie')
-    //           .where('movie.id in(:...movieIds)', { movieIds })
-    //           .andWhere('user.id = :userId', { userId })
-    //           .getMany();
-    //
-    //   /**
-    //    * {
-    //    *  movieId: boolean
-    //    * }
-    //    */
-    //   const likedMovieMap = likeMovies.reduce(
-    //     (acc, next) => ({
-    //       ...acc,
-    //       [next.movie.id]: next.isLike,
-    //     }),
-    //     {},
-    //   );
-    //
-    //   data = data.map((x) => ({
-    //     ...x,
-    //     //null || true || false
-    //     likeStatus: x.id in likedMovieMap ? likedMovieMap[x.id] : null,
-    //   }));
-    // }
+    if (userId) {
+      const movieIds = data.map((movie) => movie.id);
+
+      const likeMovies =
+        movieIds.length < 1
+          ? []
+          : await this.movieUserLikeRepository
+              .createQueryBuilder('mul')
+              .leftJoinAndSelect('mul.user', 'user')
+              .leftJoinAndSelect('mul.movie', 'movie')
+              .where('movie.id in(:...movieIds)', { movieIds })
+              .andWhere('user.id = :userId', { userId })
+              .getMany();
+
+      /**
+       * {
+       *  movieId: boolean
+       * }
+       */
+      const likedMovieMap = likeMovies.reduce(
+        (acc, next) => ({
+          ...acc,
+          [next.movie.id]: next.isLike,
+        }),
+        {},
+      );
+
+      data = data.map((x) => {
+        return plainToInstance(Movie, {
+          ...x,
+          likeStatus: x.id in likedMovieMap ? likedMovieMap[x.id] : null,
+        });
+      });
+    }
 
     return { data, nextCursor, count };
   }
 
-  async findOne(id: number, userId: number) {
+  // async findOne(id: number, userId: number): Promise<MovieListResponseDto> {
+  async findOne(id: number, userId: number): Promise<MovieResponseDto> {
     const movie = await this.movieRepository
       .createQueryBuilder('movie')
       .leftJoinAndSelect('movie.director', 'director')
