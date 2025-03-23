@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { envVariableKeys } from '../common/const/env.const';
 import { ConfigService } from '@nestjs/config';
+import { UserDto } from './dto/response/user.dto';
 
 @Injectable()
 export class UserService {
@@ -19,7 +20,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
   ) {}
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<UserDto> {
     const { email, password } = createUserDto;
     const user = await this.userRepository.findOne({ where: { email: email } });
 
@@ -37,11 +38,11 @@ export class UserService {
     return this.userRepository.findOne({ where: { email: email } });
   }
 
-  async findAll() {
+  async findAll(): Promise<UserDto[]> {
     return await this.userRepository.find();
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<UserDto> {
     const user = await this.userRepository.findOne({ where: { id: id } });
 
     if (!user) throw new NotFoundException('User not found');
@@ -49,7 +50,7 @@ export class UserService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserDto> {
     const { password } = updateUserDto;
 
     const user = await this.userRepository.findOne({ where: { id: id } });
@@ -65,7 +66,7 @@ export class UserService {
     return await this.userRepository.findOne({ where: { id: id } });
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<number> {
     const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {

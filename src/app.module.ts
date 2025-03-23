@@ -39,6 +39,7 @@ import { WorkerModule } from './worker/worker.module';
 import { HealthModule } from './health/health.module';
 import { BullModule } from '@nestjs/bullmq';
 import { FfmpegModule } from './ffmpeg/ffmpeg.module';
+import { ApiResponseInterceptor } from './common/interceptor/response-json.interceptor';
 
 @Module({
   imports: [
@@ -140,6 +141,10 @@ import { FfmpegModule } from './ffmpeg/ffmpeg.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseTimeInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ApiResponseInterceptor,
     },
     {
       provide: APP_FILTER,
