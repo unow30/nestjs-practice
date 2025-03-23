@@ -1,6 +1,5 @@
-import { Column, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Movie } from '../../../movie/entity/movie.entity';
 import { IsNumber } from 'class-validator';
 
 export class GenreDto {

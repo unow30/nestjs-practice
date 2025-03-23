@@ -7,7 +7,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { GenreDto } from '../../../genre/dto/response/genre-response.dto';
+import { GenreDto } from '../../../genre/dto/response/genreDto';
 import { DirectorDto } from '../../../director/dto/response/director-response.dto';
 import { MovieDetailDto } from './movie-detail.response.dto';
 

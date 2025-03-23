@@ -18,13 +18,13 @@ export class ApiResponseInterceptor<T>
     next: CallHandler,
   ): Observable<ApiResponse<T>> {
     const ctx = context.switchToHttp();
-    const response = ctx.getResponse();
-    const request = ctx.getRequest();
+    const res = ctx.getResponse();
+    const req = ctx.getRequest();
 
     return next.handle().pipe(
       map((data) => ({
-        status: response.statusCode,
-        url: request.url,
+        status: res.statusCode,
+        url: req.url,
         data: data,
       })),
     );
