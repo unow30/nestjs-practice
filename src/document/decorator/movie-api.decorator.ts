@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiResponse, getSchemaPath } from '@nestjs/swagger';
-import { Movie } from '../../../movie/entity/movie.entity';
-import { MovieListResponseDto } from '../../../movie/dto/response/movie-response.dto';
+import { Movie } from '../../movie/entity/movie.entity';
+import { MovieListResponseDto } from '../../movie/dto/response/movie-response.dto';
 
 export function ApiGetMovieRecent() {
   return applyDecorators(

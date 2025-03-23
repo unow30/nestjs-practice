@@ -20,11 +20,12 @@ export class ApiResponseInterceptor<T>
     const ctx = context.switchToHttp();
     const res = ctx.getResponse();
     const req = ctx.getRequest();
+    const originalUrl = req.originalUrl || req.url; // originalUrl 사용
 
     return next.handle().pipe(
       map((data) => ({
         status: res.statusCode,
-        url: req.url,
+        url: originalUrl, // 여기서 originalUrl 사용
         data: data,
       })),
     );

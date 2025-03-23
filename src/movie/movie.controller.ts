@@ -37,7 +37,7 @@ import {
   ApiPatchMovie,
   ApiPostMovie,
   ApiGetMovies,
-} from '../document/decorator/movie/movie-api.decorator';
+} from '../document/decorator/movie-api.decorator';
 import { MovieListResponseDto } from './dto/response/movie-response.dto';
 
 @Controller('movie')

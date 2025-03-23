@@ -13,7 +13,7 @@ import { Public } from './decorator/public.decorator';
 import { ApiBasicAuth, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Authorization } from './decorator/authorization.decorator';
 import { ApiPropertyResponse } from '../document/swagger-custom';
-import { ApiRegisterUser } from '../document/decorator/auth/auth-api.decorator';
+import { ApiRegisterUser } from '../document/decorator/auth-api.decorator';
 
 @Controller('auth')
 @ApiBearerAuth()

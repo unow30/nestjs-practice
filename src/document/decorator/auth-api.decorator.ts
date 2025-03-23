@@ -2,7 +2,7 @@ import {
   ApiPropertyCreated,
   ApiPropertyResponse,
   createApiOperation,
-} from '../../swagger-custom';
+} from '../swagger-custom';
 import { applyDecorators } from '@nestjs/common';
 
 export function ApiRegisterUser() {
