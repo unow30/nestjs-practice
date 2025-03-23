@@ -14,6 +14,7 @@ import { DirectorService } from './director.service';
 import { CreateDirectorDto } from './dto/create-director.dto';
 import { UpdateDirectorDto } from './dto/update-director.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { DirectorDto } from './dto/response/director-response.dto';
 
 @Controller('director')
 @ApiBearerAuth()
@@ -22,17 +23,17 @@ export class DirectorController {
   constructor(private readonly directorService: DirectorService) {}
 
   @Post()
-  create(@Body() createDirectorDto: CreateDirectorDto) {
+  create(@Body() createDirectorDto: CreateDirectorDto): Promise<DirectorDto> {
     return this.directorService.create(createDirectorDto);
   }
 
   @Get()
-  findAll() {
+  findAll(): Promise<DirectorDto[]> {
     return this.directorService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<DirectorDto> {
     return this.directorService.findOne(id);
   }
 
@@ -40,12 +41,12 @@ export class DirectorController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDirectorDto: UpdateDirectorDto,
-  ) {
+  ): Promise<DirectorDto> {
     return this.directorService.update(id, updateDirectorDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id', ParseIntPipe) id: number): Promise<number> {
     return this.directorService.remove(id);
   }
 }

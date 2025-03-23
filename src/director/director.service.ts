@@ -17,17 +17,20 @@ export class DirectorService {
     // return 'This action adds a new director';
   }
 
-  async findAll() {
+  async findAll(): Promise<Director[]> {
     return await this.directorRepository.find();
     // return `This action returns all director`;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Director> {
     return await this.directorRepository.findOne({ where: { id } });
     // return `This action returns a #${id} director`;
   }
 
-  async update(id: number, updateDirectorDto: UpdateDirectorDto) {
+  async update(
+    id: number,
+    updateDirectorDto: UpdateDirectorDto,
+  ): Promise<Director> {
     const director = await this.directorRepository.findOne({ where: { id } });
 
     if (!director) {
@@ -43,7 +46,7 @@ export class DirectorService {
     // return `This action updates a #${id} director`;
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<number> {
     const director = await this.directorRepository.findOne({ where: { id } });
 
     if (!director) {
