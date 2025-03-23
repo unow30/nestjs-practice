@@ -46,7 +46,7 @@ export class DirectorController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number): Promise<number> {
+  remove(@Param('id', ParseIntPipe) id: number): Promise<{ id: number }> {
     return this.directorService.remove(id);
   }
 }

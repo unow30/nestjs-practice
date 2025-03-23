@@ -53,6 +53,6 @@ export class GenreService {
     }
     await this.genreRepository.delete(id);
 
-    return id;
+    return { id };
   }
 }

@@ -58,7 +58,7 @@ export class UserController {
 
   @Delete(':id')
   @ApiUserDelete()
-  remove(@UserId('id', ParseIntPipe) id: number) {
+  remove(@UserId('id', ParseIntPipe) id: number): Promise<{ id: number }> {
     return this.userService.remove(id);
   }
 }

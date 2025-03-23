@@ -46,7 +46,7 @@ export class DirectorService {
     // return `This action updates a #${id} director`;
   }
 
-  async remove(id: number): Promise<number> {
+  async remove(id: number): Promise<{ id: number }> {
     const director = await this.directorRepository.findOne({ where: { id } });
 
     if (!director) {
@@ -55,6 +55,6 @@ export class DirectorService {
 
     await this.directorRepository.delete(id);
 
-    return id;
+    return { id };
   }
 }

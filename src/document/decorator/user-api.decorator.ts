@@ -158,7 +158,17 @@ export function ApiUserDelete() {
     ApiResponse({
       status: 200,
       description: '사용자 제거하기',
-      schema: { type: 'number' },
+      schema: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: {
+              id: { type: 'number', example: 1 },
+            },
+          },
+        },
+      },
     }),
   );
 }
