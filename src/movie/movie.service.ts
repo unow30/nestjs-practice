@@ -20,9 +20,10 @@ import { MovieUserLike } from './entity/movie-user-like.entity';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CursorPaginationService } from '../common/cursor-pagination.service';
 import {
+  MovieListRecentDto,
   MovieListResponseDto,
-  MovieResponseDto,
-} from './dto/response/movie-response.dto';
+  MovieDto,
+} from './dto/response/movie.dto';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
@@ -122,11 +123,11 @@ export class MovieService {
       });
     }
 
-    return { data, nextCursor, count };
+    return { data: data, nextCursor, count };
   }
 
   // async findOne(id: number, userId: number): Promise<MovieListResponseDto> {
-  async findOne(id: number, userId: number): Promise<MovieResponseDto> {
+  async findOne(id: number, userId: number): Promise<MovieListRecentDto> {
     const movie = await this.movieRepository
       .createQueryBuilder('movie')
       .leftJoinAndSelect('movie.director', 'director')
@@ -174,7 +175,7 @@ export class MovieService {
     createMovieDto: CreateMovieDto,
     qr: QueryRunner,
     userId: number,
-  ) {
+  ): Promise<MovieDto> {
     const director = await qr.manager.findOne(Director, {
       where: { id: createMovieDto.directorId },
     });
@@ -235,7 +236,7 @@ export class MovieService {
     });
   }
 
-  async update(id: number, updateMovieDto: UpdateMovieDto) {
+  async update(id: number, updateMovieDto: UpdateMovieDto): Promise<MovieDto> {
     const qr = this.dataSource.createQueryRunner();
     await qr.connect();
     await qr.startTransaction();
@@ -333,7 +334,7 @@ export class MovieService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<{ id: number }> {
     const movie = await this.movieRepository.findOne({
       where: { id },
       relations: ['movieDetail'],
@@ -352,7 +353,7 @@ export class MovieService {
 
     // await this.movieDetailRepository.delete(movie.detail.id);
     await this.movieDetailRepository.delete(movie.movieDetail.id);
-    return id;
+    return { id };
   }
 
   async toggleMovieLike(userId: number, movieId: number, isLike: boolean) {

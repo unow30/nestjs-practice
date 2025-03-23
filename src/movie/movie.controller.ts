@@ -38,7 +38,11 @@ import {
   ApiPostMovie,
   ApiGetMovies,
 } from '../document/decorator/movie-api.decorator';
-import { MovieListResponseDto } from './dto/response/movie-response.dto';
+import {
+  MovieListRecentDto,
+  MovieListResponseDto,
+  MovieDto,
+} from './dto/response/movie.dto';
 
 @Controller('movie')
 @ApiBearerAuth()
@@ -71,7 +75,10 @@ export class MovieController {
   @Get(':id')
   @ApiGetMovie()
   @Public()
-  getMovie(@Param('id', ParseIntPipe) id: number, @UserId() userId: number) {
+  getMovie(
+    @Param('id', ParseIntPipe) id: number,
+    @UserId() userId: number,
+  ): Promise<MovieListRecentDto> {
     return this.movieService.findOne(id, userId);
   }
 
@@ -83,7 +90,7 @@ export class MovieController {
     @Body() body: CreateMovieDto,
     @QueryRunner() queryRunner: QR,
     @UserId() userId: number,
-  ) {
+  ): Promise<MovieDto> {
     return this.movieService.create(body, queryRunner, userId);
   }
 
@@ -93,14 +100,14 @@ export class MovieController {
   patchMovie(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateMovieDto,
-  ) {
+  ): Promise<MovieDto> {
     return this.movieService.update(id, body);
   }
 
   @Delete(':id')
   @RBAC(Role.admin)
   @ApiDeleteMovie()
-  deleteMovie(@Param('id', ParseIntPipe) id: number) {
+  deleteMovie(@Param('id', ParseIntPipe) id: number): Promise<{ id: number }> {
     return this.movieService.remove(id);
   }
 

@@ -14,7 +14,7 @@ import { GenreService } from './genre.service';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { GenreDto } from './dto/response/genreDto';
+import { GenreDto } from './dto/response/genre.dto';
 import {
   ApiGenreCreate,
   ApiGenreDelete,

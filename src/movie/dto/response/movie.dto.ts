@@ -1,4 +1,9 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  OmitType,
+  PickType,
+} from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -7,11 +12,11 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { GenreDto } from '../../../genre/dto/response/genreDto';
-import { DirectorDto } from '../../../director/dto/response/director-response.dto';
+import { GenreDto } from '../../../genre/dto/response/genre.dto';
+import { DirectorDto } from '../../../director/dto/response/director.dto';
 import { MovieDetailDto } from './movie-detail.response.dto';
 
-export class MovieResponseDto {
+export class MovieDto {
   @ApiProperty({ description: '영화 ID' })
   @IsNumber()
   id: number;
@@ -38,7 +43,6 @@ export class MovieResponseDto {
     type: Boolean,
     nullable: true,
   })
-  @IsOptional()
   likeStatus?: boolean | null;
 
   @ApiPropertyOptional({
@@ -71,16 +75,28 @@ export class MovieResponseDto {
   movieDetail?: MovieDetailDto;
 }
 
+export class MovieListItemDto extends OmitType(MovieDto, [
+  'movieDetail',
+] as const) {}
+
+export class MovieListRecentDto extends PickType(MovieDto, [
+  'id',
+  'title',
+  'likeCount',
+  'dislikeCount',
+  'movieFileName',
+]) {}
+
 export class MovieListResponseDto {
-  @ApiProperty({ description: '영화 목록', type: [MovieResponseDto] })
+  @ApiProperty({ description: '영화 목록', type: [MovieListItemDto] })
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => MovieResponseDto)
-  data: MovieResponseDto[];
+  @Type(() => MovieListItemDto)
+  data: MovieListItemDto[];
 
   @ApiProperty({
     description: '다음 페이지 커서',
-    type: String,
+    type: 'string',
     nullable: true,
   })
   @IsString()

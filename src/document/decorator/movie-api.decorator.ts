@@ -1,7 +1,10 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 import { Movie } from '../../movie/entity/movie.entity';
-import { MovieListResponseDto } from '../../movie/dto/response/movie-response.dto';
+import {
+  MovieListResponseDto,
+  MovieDto,
+} from '../../movie/dto/response/movie.dto';
 
 export function ApiGetMovieRecent() {
   return applyDecorators(
@@ -106,7 +109,7 @@ export function ApiGetMovie() {
     ApiResponse({
       status: 200,
       description: '영화 상세 정보',
-      type: Movie,
+      type: MovieDto,
     }),
     ApiResponse({
       status: 404,

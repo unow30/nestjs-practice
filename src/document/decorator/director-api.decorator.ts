@@ -1,77 +1,78 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { GenreDto } from '../../genre/dto/response/genre.dto';
+import { DirectorDto } from '../../director/dto/response/director.dto';
 
-export function ApiGenreCreate() {
+export function ApiDirectorCreate() {
   return applyDecorators(
     ApiOperation({
-      summary: '영화 장르 생성하기',
+      summary: '영화 감독 생성하기',
       description: `
-## 영화 장르 생성하기`,
+## 영화 감독 생성하기`,
     }),
     ApiResponse({
       status: 201,
-      description: '영화 장르 생성하기',
-      type: GenreDto,
+      description: '영화 감독 생성하기',
+      type: DirectorDto,
     }),
   );
 }
 
-export function ApiGenreFindAll() {
+export function ApiDirectorFindAll() {
   return applyDecorators(
     ApiOperation({
-      summary: '장르 목록 불러오기',
+      summary: '감독 목록 불러오기',
       description: `
-## 장르 목록 불러오기`,
+## 감독 목록 불러오기`,
     }),
     ApiResponse({
       status: 200,
       description: '삭제된 영화 ID',
-      type: [GenreDto],
+      type: [DirectorDto],
     }),
   );
 }
 
-export function ApiGenreFindOne() {
+export function ApiDirectorFindOne() {
   return applyDecorators(
     ApiOperation({
-      summary: '장르 하나 가져오기',
+      summary: '감독 하나 가져오기',
       description: `
-## 장르 하나 가져오기`,
+## 감독 하나 가져오기`,
     }),
     ApiResponse({
       status: 200,
       description: '삭제된 영화 ID',
-      type: [GenreDto],
+      type: [DirectorDto],
     }),
   );
 }
 
-export function ApiGenreUpdate() {
+export function ApiDirectorUpdate() {
   return applyDecorators(
     ApiOperation({
-      summary: '장르 변경하기',
+      summary: '감독 변경하기',
       description: `
-## 장르 변경하기`,
+## 감독 변경하기`,
     }),
     ApiResponse({
       status: 200,
-      description: '장르 변경하기',
-      type: GenreDto,
+      description: '감독 변경하기',
+      type: DirectorDto,
     }),
   );
 }
 
-export function ApiGenreDelete() {
+export function ApiDirectorDelete() {
   return applyDecorators(
     ApiOperation({
-      summary: '장르 제거하기',
+      summary: '감독 제거하기',
       description: `
-## 장르 제거하기`,
+## 감독 제거하기
+## 감독과 연계된 영화 목록이 사라질 수 있으니 주의`,
     }),
     ApiResponse({
       status: 200,
-      description: '장르 제거하기',
+      description: '감독 제거하기',
       schema: {
         type: 'object',
         properties: {
