@@ -42,7 +42,6 @@ import {
   MovieListRecentDto,
   MovieListResponseDto,
   MovieDto,
-  MovieListItemDto,
 } from './dto/response/movie.dto';
 
 @Controller('movie')

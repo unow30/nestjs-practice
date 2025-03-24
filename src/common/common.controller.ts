@@ -40,8 +40,8 @@ export class CommonController {
     summary: 'presigned url 생성',
     description: `
   ## 5분간 지속되는 s3 업로드 링크를 생성한다.
-  ## 업로드 완료시 파일은 bucket-name/temp/filename(uuid)으로 저장한다.
   ## 영상 파일을 바이너리 형식으로 body에 담은 다음 해당 링크를 put 요청으로 실행한다.
+  ## 업로드 완료시 파일은 s3 bucket-name/temp/filename(uuid)으로 저장한다.
   ## 성공시 1 true 반환하면 filename을 post movie movieFileName에 입력한다.
     `,
   })
@@ -55,7 +55,7 @@ export class CommonController {
     description: `
   ## multer 단일파일 업로드 
   ## video/mp4만 업로드한다.
-  ## 업로드시 public/temp/filename(uuid)로 저장된다.
+  ## 업로드시 서버폴더의 public/temp/filename(uuid)로 저장된다.
   ### serve-static으로 파일 확인 가능
   ## 업로드 제한 용량은 일일 최대 50mb
   ## 썸네일은 bullmq의 Queue 기능으로 다른 서버에서 추출한다.
