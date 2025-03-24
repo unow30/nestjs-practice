@@ -4,6 +4,7 @@ import { Movie } from '../../movie/entity/movie.entity';
 import {
   MovieListResponseDto,
   MovieDto,
+  MovieListRecentDto,
 } from '../../movie/dto/response/movie.dto';
 
 export function ApiGetMovieRecent() {
@@ -17,7 +18,7 @@ export function ApiGetMovieRecent() {
     ApiResponse({
       status: 200,
       description: '최신 영화 리스트',
-      type: [Movie],
+      type: [MovieListRecentDto],
     }),
   );
 }
@@ -141,7 +142,7 @@ export function ApiPatchMovie() {
     ApiResponse({
       status: 200,
       description: '수정된 영화 정보',
-      type: Movie,
+      type: MovieDto,
     }),
     ApiResponse({
       status: 404,
@@ -198,15 +199,14 @@ export function ApiPostMovie() {
       description: `
 ## admin 권한 유저만 가능
 ## movieFileName에 업로드로 변경된 비디오 파일명을 적는다.(uuid)
-## dev환경: post common/video로 업로드한 파일위치를 변경하면서 파일명 저장
-- ### 서버의 public/temp 폴더에 저장된 파일이 public/movie로 이동
-## prod환경: post common/presigned-url로 업로드한 파일명을 저장하면서 s3 파일경로변경
-- ### s3 bucket temp 폴더에 저장된 파일이 movie 폴더로 이동`,
+## prod환경: post common/presigned-url로 업로드한 파일명을 movieFileName에 입력하면 s3 파일경로변경
+- ### s3 bucket temp 폴더에 저장된 파일이 movie 폴더로 이동
+- ### 잘못된 파일명 입력시 NoSuchKey: The specified key does not exist.`,
     }),
     ApiResponse({
       status: 201,
       description: '생성된 영화 정보',
-      type: Movie,
+      type: MovieDto,
     }),
     ApiResponse({
       status: 404,
@@ -235,6 +235,22 @@ export function ApiPostMovie() {
             example: '존재하지 않는 장르가 있습니다.',
           },
           error: { type: 'string', example: 'Not Found' },
+        },
+      },
+    }),
+    ApiResponse({
+      status: 500,
+      description: 'Internal Server Error',
+      schema: {
+        type: 'object',
+        properties: {
+          statusCode: { type: 'number', example: 500 },
+          message: {
+            type: 'string',
+            example:
+              'NoSuchKey: The specified key does not exist.(s3 업로드 관련 이슈)',
+          },
+          error: { type: 'string', example: 'Internal Server Error' },
         },
       },
     }),

@@ -23,6 +23,7 @@ import {
   MovieListRecentDto,
   MovieListResponseDto,
   MovieDto,
+  MovieListItemDto,
 } from './dto/response/movie.dto';
 import { plainToInstance } from 'class-transformer';
 
@@ -47,13 +48,14 @@ export class MovieService {
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
-  async findRecent() {
-    const cacheData = await this.cacheManager.get('MOVIE_RECENT');
+  async findRecent(): Promise<MovieListRecentDto[]> {
+    const cacheData: MovieListRecentDto[] =
+      await this.cacheManager.get('MOVIE_RECENT');
     if (cacheData) {
       return cacheData;
     }
 
-    const data = await this.movieRepository.find({
+    const data: MovieListRecentDto[] = await this.movieRepository.find({
       order: {
         createdAt: 'DESC',
       },
@@ -127,7 +129,7 @@ export class MovieService {
   }
 
   // async findOne(id: number, userId: number): Promise<MovieListResponseDto> {
-  async findOne(id: number, userId: number): Promise<MovieListRecentDto> {
+  async findOne(id: number, userId: number): Promise<MovieListItemDto> {
     const movie = await this.movieRepository
       .createQueryBuilder('movie')
       .leftJoinAndSelect('movie.director', 'director')
@@ -287,7 +289,7 @@ export class MovieService {
 
       await qr.manager
         .createQueryBuilder()
-        .update(movie)
+        .update('movie')
         .set(movieUpdateFields)
         .where('id= :id', { id })
         .execute();

@@ -42,6 +42,7 @@ import {
   MovieListRecentDto,
   MovieListResponseDto,
   MovieDto,
+  MovieListItemDto,
 } from './dto/response/movie.dto';
 
 @Controller('movie')
@@ -61,24 +62,22 @@ export class MovieController {
     return this.movieService.findAll(dto, userId);
   }
 
-  //movie/recent
   @Get('recent')
   @UseInterceptors(CI)
   @CacheKey('getMoviesRecent')
   @CacheTTL(1000 * 60 * 10)
   @ApiGetMovieRecent()
-  getMovieRecent() {
+  getMovieRecent(): Promise<MovieListRecentDto[]> {
     return this.movieService.findRecent();
   }
 
-  //movie/(number)
   @Get(':id')
   @ApiGetMovie()
   @Public()
   getMovie(
     @Param('id', ParseIntPipe) id: number,
     @UserId() userId: number,
-  ): Promise<MovieListRecentDto> {
+  ): Promise<MovieListItemDto> {
     return this.movieService.findOne(id, userId);
   }
 
