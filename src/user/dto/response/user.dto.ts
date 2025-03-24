@@ -38,13 +38,13 @@ export class UserToken {
 
 export class LoginDto {
   @ApiProperty({
-    example: 'user1@example.com',
+    example: 'user001@test.ai',
     description: '사용자 이메일',
   })
   email: string;
 
   @ApiProperty({
-    example: '1234',
+    example: '123123',
     description: '사용자 비밀번호',
   })
   password: string;

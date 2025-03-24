@@ -57,6 +57,7 @@ export class AuthController {
   /**
    * passport-local 을 이용한 로그인
    * */
+  @Public()
   @UseGuards(LocalAuthGuard)
   @ApiLoginUserPassport()
   @Post('login/passport')
