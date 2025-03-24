@@ -253,6 +253,7 @@ export class MovieService {
         throw new NotFoundException('존재하지 않는 영화의 id 입니다.');
       }
 
+      const movieDetailId = movie.movieDetail.id;
       const { detail, directorId, genreIds, ...movieRest } = updateMovieDto;
 
       let newDirector;
@@ -289,7 +290,7 @@ export class MovieService {
 
       await qr.manager
         .createQueryBuilder()
-        .update('movie')
+        .update(Movie)
         .set(movieUpdateFields)
         .where('id= :id', { id })
         .execute();
@@ -297,9 +298,9 @@ export class MovieService {
       if (detail) {
         await qr.manager
           .createQueryBuilder()
-          .update('movieDetail')
+          .update(MovieDetail)
           .set({ detail: detail })
-          .where('movieDetail.id= :id', { id })
+          .where('id= :id', { id: movieDetailId })
           .execute();
       }
 
@@ -314,14 +315,6 @@ export class MovieService {
           );
       }
 
-      // const newMovie = await this.movieRepository.findOne({
-      //   where: { id },
-      //   relations: ['movieDetail', 'director'],
-      // });
-      //
-      // newMovie.genres = newGenres;
-      // await this.movieRepository.save(newMovie);
-
       await qr.commitTransaction();
 
       return await this.movieRepository.findOne({
@@ -329,6 +322,7 @@ export class MovieService {
         relations: ['movieDetail', 'director', 'genres'],
       });
     } catch (e) {
+      console.error(e);
       await qr.rollbackTransaction();
       throw e;
     } finally {
