@@ -172,7 +172,7 @@ export class CommonService {
     const nextCursor = Buffer.from(JSON.stringify(cursorObj)).toString(
       'base64',
     );
-    console.log('nextCursor', nextCursor);
+    // console.log('nextCursor', nextCursor);
     return nextCursor;
   }
 }

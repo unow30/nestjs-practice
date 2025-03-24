@@ -28,7 +28,7 @@ export class AuthService {
 
   async tokenBlock(token: string) {
     const payload = this.jwtService.decode(token);
-    console.log(payload);
+
     const tokenKey = `BLOCKED_TOKEN_${token}`;
 
     const expiryDate = +new Date(payload['exp'] * 1000);
@@ -146,7 +146,6 @@ export class AuthService {
   }
 
   async issueToken(user: { id: number; role: Role }, isRefreshToken: boolean) {
-    console.log('user', user);
     const refreshTokenSecret = this.configService.get<string>(
       envVariableKeys.refreshTokenSecret,
     );

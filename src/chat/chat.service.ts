@@ -31,7 +31,6 @@ export class ChatService {
   }
 
   async joinUserRooms(user: { sub: number }, client: Socket) {
-    console.log('user.sub', user);
     const chatRooms = await this.chatRoomRepository
       .createQueryBuilder('chatRoom')
       .innerJoin('chatRoom.users', 'user', 'user.id = :userId', {

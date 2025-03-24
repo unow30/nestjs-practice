@@ -40,7 +40,7 @@ export class ThrottleInterceptor implements NestInterceptor {
       unit: 'minute';
     }>(Throttle, context.getHandler());
 
-    console.log('throttleOptions', throttleOptions);
+    // console.log('throttleOptions', throttleOptions);
 
     if (!throttleOptions) {
       return next.handle();
@@ -51,7 +51,7 @@ export class ThrottleInterceptor implements NestInterceptor {
     const key = `${request.method}_${request.path}_${userId}_${minute}`;
 
     const count = await this.cacheManager.get<number>(key);
-    console.log('count', count);
+    // console.log('count', count);
 
     if (count && count >= throttleOptions.count) {
       throw new ForbiddenException('요청횟수 초과');
