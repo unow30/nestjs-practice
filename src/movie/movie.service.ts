@@ -358,7 +358,11 @@ export class MovieService {
     return { id };
   }
 
-  async toggleMovieLike(userId: number, movieId: number, isLike: boolean) {
+  async toggleMovieLike(
+    userId: number,
+    movieId: number,
+    isLike: boolean,
+  ): Promise<{ isLike: boolean | null }> {
     const movie = await this.movieRepository.findOne({
       where: { id: movieId },
     });

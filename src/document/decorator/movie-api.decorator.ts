@@ -73,6 +73,56 @@ export function ApiCreateMovieLike() {
   );
 }
 
+export function ApiCreateMovieDisLike() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '영화 싫어요',
+      description: `
+## movie/:id 에서 싫어요 여부 확인 가능
+## 싫어요를 처음 누른 상태면 이를 생성한다.
+## 싫어요를 다시 누르면 이를 제거한다.
+## 좋아요를 누르면 좋아요로 변경한다.`,
+    }),
+    ApiResponse({
+      status: 200,
+      description: '싫어요 상태',
+      schema: {
+        type: 'object',
+        properties: {
+          isLike: {
+            type: 'boolean',
+            description: '싫어요 상태',
+          },
+        },
+      },
+    }),
+    ApiResponse({
+      status: 400,
+      description: '존재하지 않는 영화입니다.',
+      schema: {
+        type: 'object',
+        properties: {
+          statusCode: { type: 'number', example: 400 },
+          message: { type: 'string', example: '존재하지 않는 영화입니다.' },
+          error: { type: 'string', example: 'Bad Request' },
+        },
+      },
+    }),
+    ApiResponse({
+      status: 401,
+      description: '사용자 정보가 없습니다.',
+      schema: {
+        type: 'object',
+        properties: {
+          statusCode: { type: 'number', example: 401 },
+          message: { type: 'string', example: '사용자 정보가 없습니다.' },
+          error: { type: 'string', example: 'Unauthorized' },
+        },
+      },
+    }),
+  );
+}
+
 export function ApiDeleteMovie() {
   return applyDecorators(
     ApiOperation({

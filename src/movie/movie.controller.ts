@@ -77,7 +77,7 @@ export class MovieController {
   getMovie(
     @Param('id', ParseIntPipe) id: number,
     @UserId() userId: number,
-  ): Promise<MovieListItemDto> {
+  ): Promise<MovieDto> {
     return this.movieService.findOne(id, userId);
   }
 
@@ -115,7 +115,7 @@ export class MovieController {
   createMovieLike(
     @Param('id', ParseIntPipe) movieId: number,
     @UserId() userId: number,
-  ) {
+  ): Promise<{ isLike: boolean | null }> {
     return this.movieService.toggleMovieLike(userId, movieId, true);
   }
 
