@@ -67,9 +67,10 @@ export class CommonService {
         Bucket: bucketName,
         Key: `public/temp/${filename}`,
       });
-    } catch (e) {
-      console.log(e);
-      throw new InternalServerErrorException('S3 upload error');
+    } catch (error) {
+      const errorMessage = `${error.name}: ${error.message}`;
+
+      throw new InternalServerErrorException(errorMessage);
     }
   }
 
