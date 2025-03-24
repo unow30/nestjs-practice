@@ -18,7 +18,9 @@ export class LocalAuthGuard extends AuthGuard('local') {}
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
-    super();
+    super({
+      usernameField: 'email',
+    });
   }
 
   /**

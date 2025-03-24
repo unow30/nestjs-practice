@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiOperation, ApiResponse, getSchemaPath } from '@nestjs/swagger';
-import { Movie } from '../../movie/entity/movie.entity';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+
 import {
   MovieListResponseDto,
   MovieDto,

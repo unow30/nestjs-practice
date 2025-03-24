@@ -14,17 +14,14 @@ export class DirectorService {
 
   async create(createDirectorDto: CreateDirectorDto) {
     return await this.directorRepository.save(createDirectorDto);
-    // return 'This action adds a new director';
   }
 
   async findAll(): Promise<Director[]> {
     return await this.directorRepository.find();
-    // return `This action returns all director`;
   }
 
   async findOne(id: number): Promise<Director> {
     return await this.directorRepository.findOne({ where: { id } });
-    // return `This action returns a #${id} director`;
   }
 
   async update(
@@ -43,7 +40,6 @@ export class DirectorService {
       where: { id },
     });
     return newDirector;
-    // return `This action updates a #${id} director`;
   }
 
   async remove(id: number): Promise<{ id: number }> {

@@ -13,6 +13,8 @@ import { JwtService } from '@nestjs/jwt';
 import { envVariableKeys } from '../common/const/env.const';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { UserService } from '../user/user.service';
+import { UserDto, UserToken } from '../user/dto/response/user.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -26,17 +28,18 @@ export class AuthService {
 
   async tokenBlock(token: string) {
     const payload = this.jwtService.decode(token);
+    console.log(payload);
     const tokenKey = `BLOCKED_TOKEN_${token}`;
 
     const expiryDate = +new Date(payload['exp'] * 1000);
     const now = +Date.now();
     const diffInSeconds = (expiryDate - now) / 1000;
-    // console.table({
-    //   expiryDate: expiryDate,
-    //   now: now,
-    //   diffInSeconds: diffInSeconds,
-    //   mathMax: Math.max(diffInSeconds * 1000 * 30, 10),
-    // });
+    console.table({
+      expiryDate: expiryDate,
+      now: now,
+      diffInSeconds: diffInSeconds,
+      mathMax: Math.max(diffInSeconds * 1000 * 30, 10),
+    });
     await this.cacheManager.set(
       tokenKey,
       payload,
@@ -117,9 +120,13 @@ export class AuthService {
   }
 
   //rawToken -> "Basic $token"
-  async register(rawToken: string) {
+  async register(rawToken: string): Promise<UserDto> {
     const { email, password } = this.parseBasicToken(rawToken);
-    return this.userService.create({ email, password });
+    const user = await this.userService.create({ email, password });
+
+    return plainToInstance(UserDto, user, {
+      excludeExtraneousValues: true, // 이 옵션을 사용하면 @Expose()가 있는 속성만 포함됩니다
+    });
   }
 
   async authenticate(email: string, password: string) {
@@ -139,6 +146,7 @@ export class AuthService {
   }
 
   async issueToken(user: { id: number; role: Role }, isRefreshToken: boolean) {
+    console.log('user', user);
     const refreshTokenSecret = this.configService.get<string>(
       envVariableKeys.refreshTokenSecret,
     );
@@ -159,7 +167,7 @@ export class AuthService {
   }
 
   //rawToken -> "Basic $token"
-  async loginUser(rawToken: string) {
+  async loginUser(rawToken: string): Promise<UserToken> {
     const { email, password } = this.parseBasicToken(rawToken);
 
     const user = await this.authenticate(email, password);
