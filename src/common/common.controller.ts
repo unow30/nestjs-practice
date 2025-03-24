@@ -22,6 +22,7 @@ import { UpdateLocalFilePathDto } from '../movie/dto/update-local-filepath.dto';
 import { Request } from 'express';
 import { MulterService } from './multer.service';
 import { join } from 'path';
+import { MulterVideoUploadInterceptor } from './interceptor/multer-video-upload.interceptor';
 
 @Controller('common')
 @ApiBearerAuth()
@@ -57,7 +58,7 @@ export class CommonController {
   ## video/mp4만 업로드한다.
   ## 업로드시 서버폴더의 public/temp/filename(uuid)로 저장된다.
   ### serve-static으로 파일 확인 가능
-  ## 업로드 제한 용량은 일일 최대 50mb
+  ## 업로드 제한 용량은 일일 최대 100mb
   ## 썸네일은 bullmq의 Queue 기능으로 다른 서버에서 추출한다.
   ## 요청 성공시 put multer/video에 응답값인 filename을 입력한다.
     `,
@@ -75,21 +76,10 @@ export class CommonController {
       },
     },
   })
-  @UseInterceptors(
-    FileInterceptor('video', {
-      limits: { fileSize: 100000000 },
-      fileFilter(req, file, callback) {
-        if (file.mimetype !== 'video/mp4') {
-          return callback(
-            new BadRequestException('mp4타입만 업로드 가능합니다.'),
-            false,
-          );
-        }
-        return callback(null, true);
-      },
-    }),
-  )
+  @MulterVideoUploadInterceptor()
   async createVideo(@UploadedFile() movie: Express.Multer.File) {
+    // 3001번 포트 서버, WatermarkGenerationProcess
+
     await this.watermarkQueue.add('watermark', {
       videoId: movie.filename,
       videoPath: movie.path,
@@ -139,5 +129,63 @@ export class CommonController {
     @Req() request: Request,
   ) {
     return this.multerService.renameMovieFile(body.filename, request);
+  }
+
+  @Post('multer/s3/video/')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Upload a file',
+    schema: {
+      type: 'object',
+      properties: {
+        video: {
+          type: 'string',
+          format: 'binary', // 파일 형식 명시
+        },
+      },
+    },
+  })
+  @ApiOperation({
+    summary: 'multer s3로 비디오 파일 업로드',
+    description: `
+  ## multer 단일파일 업로드 
+  ## video/mp4만 업로드한다.
+  ## 업로드시 s3 폴더의 public/temp/filename(uuid)로 저장된다.
+  ## post movie 생성시 filename을 입력한다. movie 생성시 파일은 s3 폴더의 public/temp/filename(uuid)로 이동된다.
+  ## 업로드 제한 용량은 일일 최대 100mb
+    `,
+  })
+  @MulterVideoUploadInterceptor()
+  async createS3Video(@UploadedFile() movie: Express.Multer.File) {
+    // 3001번 포트 서버, WatermarkGenerationProcess
+    await this.watermarkQueue.add('watermark', {
+      videoId: movie.filename,
+      videoPath: movie.path,
+      watermarkPath: join(
+        process.cwd(),
+        'public',
+        'watermark',
+        'watermark1.png',
+      ),
+    });
+
+    // await this.thumbnailQueue.add(
+    //   'thumbnail',
+    //   {
+    //     videoId: movie.filename,
+    //     videoPath: movie.path,
+    //   },
+    //   // {
+    //   //   priority: 1, //낮을수록 우선순위가 높다.
+    //   //   delay: 100, //ms만큼 기다렸다 실행해라
+    //   //   attempts: 3, //실패시 n번까지 실행해라
+    //   //   lifo: true, //queue를 stack처럼 실행한다.
+    //   //   removeOnComplete: true, //작업 성공시 작업내용을 지운다.
+    //   //   removeOnFail: true, //작업 실패시 작업내용을 지운다.
+    //   // },
+    // );
+    return {
+      filename: movie.filename,
+    };
   }
 }
