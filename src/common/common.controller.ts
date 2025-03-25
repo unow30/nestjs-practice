@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Post,
@@ -8,7 +7,6 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { CommonService } from './common.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Queue } from 'bullmq';
@@ -17,7 +15,7 @@ import { UpdateLocalFilePathDto } from '../movie/dto/update-local-filepath.dto';
 import { Request } from 'express';
 import { MulterService } from './multer.service';
 import { join } from 'path';
-import { MulterLocalVideoUploadInterceptor } from './interceptor/multer-video-upload.interceptor';
+import { MulterLocalVideoUpload } from './interceptor/multer-video-upload.interceptor';
 import {
   ApiCreatePresignedUrl,
   ApiCreateVideo,
@@ -37,7 +35,7 @@ export class CommonController {
     private readonly watermarkQueue: Queue,
   ) {}
 
-  @Post('/s3/presigned-url')
+  @Post('/presigned-url')
   @ApiCreatePresignedUrl()
   async createPresignedUrl() {
     return await this.commonService.createPresignedUrl();
@@ -47,7 +45,7 @@ export class CommonController {
   //todo: s3/temp/uuid로 파일 저장하기,
   //todo: s3/temp/uuid_wm로 파일 저장하기
   @ApiCreateVideoS3()
-  @UseInterceptors(MulterLocalVideoUploadInterceptor())
+  @UseInterceptors(MulterLocalVideoUpload())
   async createVideoS3(@UploadedFile() movie: Express.Multer.File) {
     // 3001번 포트 서버, WatermarkGenerationProcess
     await this.watermarkQueue.add('watermark', {
@@ -87,7 +85,7 @@ export class CommonController {
 
   @Post('video/multer')
   @ApiCreateVideo()
-  @UseInterceptors(MulterLocalVideoUploadInterceptor())
+  @UseInterceptors(MulterLocalVideoUpload())
   async createVideo(@UploadedFile() movie: Express.Multer.File) {
     // 3001번 포트 서버, WatermarkGenerationProcess
 

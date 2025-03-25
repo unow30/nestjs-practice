@@ -12,6 +12,7 @@ import { DefaultLogger } from './logger/default.logger';
 import { BullModule } from '@nestjs/bullmq';
 import { MulterService } from './multer.service';
 import { CursorPaginationService } from './cursor-pagination.service';
+import { AwsService } from './aws.service';
 
 @Module({
   imports: [
@@ -49,7 +50,8 @@ import { CursorPaginationService } from './cursor-pagination.service';
     MulterService,
     CursorPaginationService,
     DefaultLogger,
+    AwsService,
   ],
-  exports: [CommonService, DefaultLogger, CursorPaginationService],
+  exports: [CommonService, AwsService, DefaultLogger, CursorPaginationService],
 })
 export class CommonModule {}

@@ -65,12 +65,12 @@ importers:
       '@nestjs/websockets':
         specifier: ^11.0.11
         version: 11.0.11(@nestjs/common@11.0.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.10)(@nestjs/platform-socket.io@11.0.11)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@types/express-session':
-        specifier: ^1.18.1
-        version: 1.18.1
       '@types/fluent-ffmpeg':
         specifier: ^2.1.27
         version: 2.1.27
+      '@types/multer-s3':
+        specifier: ^3.0.3
+        version: 3.0.3
       aws-sdk:
         specifier: ^2.1692.0
         version: 2.1692.0
@@ -110,6 +110,9 @@ importers:
       multer:
         specifier: 1.4.5-lts.1
         version: 1.4.5-lts.1
+      multer-s3:
+        specifier: ^3.0.1
+        version: 3.0.1(@aws-sdk/client-s3@3.750.0)
       nest-winston:
         specifier: ^1.10.2
         version: 1.10.2(@nestjs/common@11.0.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(winston@3.17.0)
@@ -159,6 +162,9 @@ importers:
       '@types/express':
         specifier: ^5.0.0
         version: 5.0.0
+      '@types/express-session':
+        specifier: ^1.18.1
+        version: 1.18.1
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
@@ -306,6 +312,12 @@ packages:
   '@aws-sdk/credential-provider-web-identity@3.750.0':
     resolution: {integrity: sha512-Nz8zs3YJ+GOTSrq+LyzbbC1Ffpt7pK38gcOyNZv76pP5MswKTUKNYBJehqwa+i7FcFQHsCk3TdhR8MT1ZR23uA==}
     engines: {node: '>=18.0.0'}
+
+  '@aws-sdk/lib-storage@3.774.0':
+    resolution: {integrity: sha512-xB3rD+F5pt+JLJaUt5eakCJ3+CUa8PXk9nxgN2VozfpuvuR6A/l3lnxmP5wYLhw1I9hxJLV9AD1/QYcibdBjtQ==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@aws-sdk/client-s3': ^3.774.0
 
   '@aws-sdk/middleware-bucket-endpoint@3.734.0':
     resolution: {integrity: sha512-etC7G18aF7KdZguW27GE/wpbrNmYLVT755EsFc8kXpZj8D6AFKxc7OuveinJmiy0bYXAMspJUWsF6CrGpOw6CQ==}
@@ -1391,6 +1403,9 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
+  '@types/multer-s3@3.0.3':
+    resolution: {integrity: sha512-VgWygI9UwyS7loLithUUi0qAMIDWdNrERS2Sb06UuPYiLzKuIFn2NgL7satyl4v8sh/LLoU7DiPanvbQaRg9Yg==}
+
   '@types/multer@1.4.12':
     resolution: {integrity: sha512-pQ2hoqvXiJt2FP9WQVLPRO+AmiIm/ZYkavPlIQnx282u4ZrVdztx0pkh3jjpQt0Kz+YI0YhSG264y08UJKoUQg==}
 
@@ -1764,6 +1779,9 @@ packages:
 
   buffer@4.9.2:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
+
+  buffer@5.6.0:
+    resolution: {integrity: sha512-/gDYp/UtU0eA1ys8bOs9J6a+E/KWIY+DZ+Q2WESNUA0jFRsJOc0SNUO6xJ5SGA1xueg3NL65W6s+NY5l9cunuw==}
 
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
@@ -2399,6 +2417,10 @@ packages:
     resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
     engines: {node: '>=16.0.0'}
 
+  file-type@3.9.0:
+    resolution: {integrity: sha512-RLoqTXE8/vPmMuTI88DAzhMYC99I8BWv7zYP4A1puo5HIjEJ5EX48ighy4ZyKMG9EDXxBgW6e++cn7d1xuFghA==}
+    engines: {node: '>=0.10.0'}
+
   filelist@1.0.4:
     resolution: {integrity: sha512-w1cEuf3S+DrLCQL7ET6kz+gmlJdbq9J7yXCSjK/OZCPA+qEN1WyF4ZAf0YYJa4/shHJra2t/d/r8SV4Ji+x+8Q==}
 
@@ -2595,6 +2617,9 @@ packages:
 
   highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
+
+  html-comment-regex@1.1.2:
+    resolution: {integrity: sha512-P+M65QY2JQ5Y0G9KKdlDpo0zK+/OHptU5AaBwUfAIDJZk1MYf32Frm84EcOytfJE0t5JvkAnKlmjsXDnWzCJmQ==}
 
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
@@ -3209,6 +3234,12 @@ packages:
   msgpackr@1.11.2:
     resolution: {integrity: sha512-F9UngXRlPyWCDEASDpTf6c9uNhGPTqnTeLVt7bN+bU1eajoR/8V9ys2BRaV5C/e5ihE6sJ9uPIKaYt6bFuO32g==}
 
+  multer-s3@3.0.1:
+    resolution: {integrity: sha512-BFwSO80a5EW4GJRBdUuSHblz2jhVSAze33ZbnGpcfEicoT0iRolx4kWR+AJV07THFRCQ78g+kelKFdjkCCaXeQ==}
+    engines: {node: '>= 12.0.0'}
+    peerDependencies:
+      '@aws-sdk/client-s3': ^3.0.0
+
   multer@1.4.5-lts.1:
     resolution: {integrity: sha512-ywPWvcDMeH+z9gQq5qYHCCy+ethsk4goepZ45GLD63fOu0YcNecQxi64nDs3qluZB+murG3/D4dJ7+dGctcCQQ==}
     engines: {node: '>= 6.0.0'}
@@ -3815,6 +3846,9 @@ packages:
   statuses@2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
+
+  stream-browserify@3.0.0:
+    resolution: {integrity: sha512-H73RAHsVBapbim0tU2JwwOiXUj+fikfiaoYAKHF3VJfA0pe2BCzkhAHBlLG6REzE+2WNZcxOXjK7lkso+9euLA==}
 
   streamsearch@1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
@@ -4638,6 +4672,17 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - aws-crt
+
+  '@aws-sdk/lib-storage@3.774.0(@aws-sdk/client-s3@3.750.0)':
+    dependencies:
+      '@aws-sdk/client-s3': 3.750.0
+      '@smithy/abort-controller': 4.0.1
+      '@smithy/middleware-endpoint': 4.0.6
+      '@smithy/smithy-client': 4.1.6
+      buffer: 5.6.0
+      events: 3.3.0
+      stream-browserify: 3.0.0
+      tslib: 2.8.1
 
   '@aws-sdk/middleware-bucket-endpoint@3.734.0':
     dependencies:
@@ -6121,6 +6166,14 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
+  '@types/multer-s3@3.0.3':
+    dependencies:
+      '@aws-sdk/client-s3': 3.750.0
+      '@types/multer': 1.4.12
+      '@types/node': 20.17.19
+    transitivePeerDependencies:
+      - aws-crt
+
   '@types/multer@1.4.12':
     dependencies:
       '@types/express': 5.0.0
@@ -6620,6 +6673,11 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.1.13
       isarray: 1.0.0
+
+  buffer@5.6.0:
+    dependencies:
+      base64-js: 1.5.1
+      ieee754: 1.2.1
 
   buffer@5.7.1:
     dependencies:
@@ -7293,6 +7351,8 @@ snapshots:
     dependencies:
       flat-cache: 4.0.1
 
+  file-type@3.9.0: {}
+
   filelist@1.0.4:
     dependencies:
       minimatch: 5.1.6
@@ -7502,6 +7562,8 @@ snapshots:
   hexoid@2.0.0: {}
 
   highlight.js@10.7.3: {}
+
+  html-comment-regex@1.1.2: {}
 
   html-escaper@2.0.2: {}
 
@@ -8307,6 +8369,14 @@ snapshots:
     optionalDependencies:
       msgpackr-extract: 3.0.3
 
+  multer-s3@3.0.1(@aws-sdk/client-s3@3.750.0):
+    dependencies:
+      '@aws-sdk/client-s3': 3.750.0
+      '@aws-sdk/lib-storage': 3.774.0(@aws-sdk/client-s3@3.750.0)
+      file-type: 3.9.0
+      html-comment-regex: 1.1.2
+      run-parallel: 1.2.0
+
   multer@1.4.5-lts.1:
     dependencies:
       append-field: 1.0.0
@@ -8898,6 +8968,11 @@ snapshots:
   standard-as-callback@2.1.0: {}
 
   statuses@2.0.1: {}
+
+  stream-browserify@3.0.0:
+    dependencies:
+      inherits: 2.0.4
+      readable-stream: 3.6.2
 
   streamsearch@1.1.0: {}
 
