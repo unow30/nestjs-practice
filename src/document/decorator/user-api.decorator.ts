@@ -161,12 +161,7 @@ export function ApiUserDelete() {
       schema: {
         type: 'object',
         properties: {
-          data: {
-            type: 'object',
-            properties: {
-              id: { type: 'number', example: 1 },
-            },
-          },
+          id: { type: 'number', example: 1 },
         },
       },
     }),

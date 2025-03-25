@@ -69,6 +69,8 @@ export class CommonService {
     }
   }
 
+  async saveLocalMovieToPermanentStorage(filename: string) {}
+
   applyPagePaginationParamsToQb<T>(
     qb: SelectQueryBuilder<T>,
     dto: PagePaginationDto,
