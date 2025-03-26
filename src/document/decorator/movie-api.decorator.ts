@@ -248,8 +248,8 @@ export function ApiPostMovie() {
       summary: '영화 생성하기',
       description: `
 ## admin 권한 유저만 가능
-## movieFileName에 업로드로 변경된 비디오 파일명을 적는다.(uuid)
-## prod환경: post common/presigned-url로 업로드한 파일명을 movieFileName에 입력하면 s3 파일경로변경
+## movieFileName에 업로드로 변경된 비디오 파일명을 적는다.(uuid.mp4)
+## prod환경: post common/presigned-url로 업로드한 파일명(uuid.mp4)을 movieFileName에 입력하면 s3 파일경로변경
 - ### s3 bucket temp 폴더에 저장된 파일이 movie 폴더로 이동
 - ### 잘못된 파일명 입력시 NoSuchKey: The specified key does not exist.`,
     }),

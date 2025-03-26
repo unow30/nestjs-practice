@@ -3,8 +3,10 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import {
   CopyObjectCommand,
   DeleteObjectCommand,
+  HeadObjectCommand,
   ObjectCannedACL,
   PutObjectCommand,
+  S3Client,
 } from '@aws-sdk/client-s3';
 import { v4 as Uuid } from 'uuid';
 import { AwsService } from './aws.service'; // AwsService를 가져옵니다.
@@ -58,7 +60,10 @@ export class CommonService {
 
       return [
         { filename: originalFilename, url: originalUrl },
-        { filename: watermarkedFilename, url: watermarkedUrl },
+        {
+          filename: watermarkedFilename,
+          url: watermarkedUrl,
+        },
       ];
     } catch (e) {
       console.error(e);
@@ -73,24 +78,104 @@ export class CommonService {
         envVariableKeys.bucketName,
       );
 
-      await s3Client.send(
-        new CopyObjectCommand({
-          Bucket: bucketName,
-          CopySource: `${bucketName}/public/temp/${filename}`,
-          Key: `public/movie/${filename}`,
-          ACL: 'public-read',
-        }),
-      );
+      // 초기 파일 존재 여부 확인
+      const [originFileExists, wmFileExists] = await Promise.all([
+        this.doesObjectExist(
+          s3Client,
+          bucketName,
+          `public/temp/${filename}.mp4`,
+        ),
+        this.doesObjectExist(
+          s3Client,
+          bucketName,
+          `public/temp/${filename}_wm.mp4`,
+        ),
+      ]);
 
-      await s3Client.send(
-        new DeleteObjectCommand({
-          Bucket: bucketName,
-          Key: `public/temp/${filename}`,
-        }),
-      );
+      if (!originFileExists && !wmFileExists) {
+        console.log(
+          'Both origin and watermark files do not exist. Skipping all operations.',
+        );
+        return;
+      }
+
+      if (!originFileExists) {
+        console.log(
+          `Origin file (${filename}.mp4) does not exist. Skipping related operations.`,
+        );
+      }
+
+      if (!wmFileExists) {
+        console.log(
+          `Watermark file (${filename}_wm.mp4) does not exist. Skipping related operations.`,
+        );
+      }
+
+      // 첫 번째 CopyObjectCommand 실행 (origin 파일이 있을 경우)
+      if (originFileExists) {
+        await s3Client.send(
+          new CopyObjectCommand({
+            Bucket: bucketName,
+            CopySource: `${bucketName}/public/temp/${filename}.mp4`,
+            Key: `public/movie/${filename}/origin.mp4`,
+            ACL: 'public-read',
+          }),
+        );
+      }
+
+      // 두 번째 CopyObjectCommand 실행 (watermark 파일이 있을 경우)
+      if (wmFileExists) {
+        await s3Client.send(
+          new CopyObjectCommand({
+            Bucket: bucketName,
+            CopySource: `${bucketName}/public/temp/${filename}_wm.mp4`,
+            Key: `public/movie/${filename}/wm.mp4`,
+            ACL: 'public-read',
+          }),
+        );
+      }
+
+      // 첫 번째 DeleteObjectCommand 실행 (origin 파일이 있을 경우)
+      if (originFileExists) {
+        await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: bucketName,
+            Key: `public/temp/${filename}.mp4`,
+          }),
+        );
+      }
+
+      // 두 번째 DeleteObjectCommand 실행 (watermark 파일이 있을 경우)
+      if (wmFileExists) {
+        await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: bucketName,
+            Key: `public/temp/${filename}_wm.mp4`,
+          }),
+        );
+      }
+
+      console.log('S3 operations completed successfully');
     } catch (error) {
-      const errorMessage = `${error.name}: ${error.message}`;
-      throw new InternalServerErrorException(errorMessage);
+      console.error('Error during S3 operations:', error);
+      throw error;
+    }
+  }
+
+  async doesObjectExist(
+    s3Client: S3Client,
+    bucketName: string,
+    key: string,
+  ): Promise<boolean> {
+    try {
+      const headParams = { Bucket: bucketName, Key: key };
+      await s3Client.send(new HeadObjectCommand(headParams));
+      return true; // Object exists
+    } catch (error) {
+      if (error.name === 'NotFound') {
+        return false; // Object does not exist
+      }
+      throw error; // Other errors
     }
   }
 }

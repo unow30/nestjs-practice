@@ -25,7 +25,7 @@ export class MovieDto {
   @IsString()
   title: string;
 
-  @ApiProperty({ description: '영화 파일 경로' })
+  @ApiProperty({ description: '영화 파일 경로, s3 bucket' })
   @IsString()
   movieFileName: string;
 
