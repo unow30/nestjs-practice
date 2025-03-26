@@ -1,21 +1,17 @@
-import {
-  ApiPropertyCreated,
-  ApiPropertyResponse,
-  createApiOperation,
-} from '../swagger-custom';
 import { applyDecorators } from '@nestjs/common';
 import { ApiBody, ApiHeader, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LoginDto, UserDto, UserToken } from '../../user/dto/response/user.dto';
 
 export function ApiRegisterUser() {
   return applyDecorators(
-    createApiOperation(
-      '유저 회원가입',
-      `
+    ApiOperation({
+      summary: '유저 회원가입',
+      description: `
   ## email, password를 base 64 encoding 후 header authorizaion으로 보낸다.
   ## authorize 버튼 > 새로운 email, password 입력 후 로그인 버튼 클릭시 header Authorization 생성 
-  ## 해당 api 실행하면 회원가입 진행`,
-    ),
+  ## 해당 api 실행하면 회원가입 진행,
+ `,
+    }),
     ApiResponse({
       status: 201,
       description: '유저 회원가입',
@@ -33,40 +29,6 @@ export function ApiRegisterUser() {
         },
       },
     }),
-    // ApiPropertyCreated({
-    //   properties: {
-    //     createdAt: {
-    //       type: 'string',
-    //       format: 'date-time',
-    //       description: '생성시간',
-    //     },
-    //     updatedAt: {
-    //       type: 'string',
-    //       format: 'date-time',
-    //       description: '변경시간',
-    //     },
-    //     version: {
-    //       type: 'number',
-    //       description: '변경시 숫자 count',
-    //     },
-    //     id: {
-    //       type: 'number',
-    //       description: '유저 id',
-    //     },
-    //     email: {
-    //       type: 'string',
-    //       description: '유저 email',
-    //     },
-    //     password: {
-    //       type: 'string',
-    //       description: '비밀번호(암호화)',
-    //     },
-    //     role: {
-    //       type: 'string',
-    //       description: '0: 관리자, 1:구독유저 2: 유저',
-    //     },
-    //   },
-    // }),
   );
 }
 

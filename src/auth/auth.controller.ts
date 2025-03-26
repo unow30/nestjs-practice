@@ -12,15 +12,13 @@ import { JwtAuthGuard } from './strategy/jwt.strategy';
 import { Public } from './decorator/public.decorator';
 import { ApiBasicAuth, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Authorization } from './decorator/authorization.decorator';
-import { ApiPropertyResponse } from '../document/swagger-custom';
 import {
-  ApiBlockToken,
   ApiLoginUser,
   ApiLoginUserPassport,
   ApiRegisterUser,
   ApiRotateAccessToken,
 } from '../document/decorator/auth-api.decorator';
-import { LoginDto, UserDto, UserToken } from '../user/dto/response/user.dto';
+import { UserDto, UserToken } from '../user/dto/response/user.dto';
 
 @Controller('auth')
 @ApiBearerAuth()
