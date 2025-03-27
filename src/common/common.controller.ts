@@ -6,6 +6,7 @@ import {
   Req,
   UploadedFile,
   UseInterceptors,
+  BadRequestException,
 } from '@nestjs/common';
 import { CommonService } from './common.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -19,9 +20,10 @@ import { MulterLocalVideoUpload } from './interceptor/multer-video-upload.interc
 import {
   ApiCreatePresignedUrl,
   ApiCreateVideo,
-  ApiCreateVideoS3,
+  ApiPublishVideoS3,
   ApiPublishVideo,
 } from '../document/decorator/video-api.decorator';
+import * as fs from 'fs/promises';
 
 @Controller('common')
 @ApiBearerAuth()
@@ -29,8 +31,6 @@ export class CommonController {
   constructor(
     private readonly commonService: CommonService,
     private readonly multerService: MulterService,
-    // @InjectQueue('thumbnail-generation')
-    // private readonly thumbnailQueue: Queue,
     @InjectQueue('watermark-generation')
     private readonly watermarkQueue: Queue,
   ) {}
@@ -41,83 +41,37 @@ export class CommonController {
     return await this.commonService.createPresignedUrl();
   }
 
-  @Post('video/multer-s3')
-  //todo: s3/temp/uuid로 파일 저장하기,
-  //todo: s3/temp/uuid_wm로 파일 저장하기
-  @ApiCreateVideoS3()
-  @UseInterceptors(MulterLocalVideoUpload())
-  async createVideoS3(@UploadedFile() movie: Express.Multer.File) {
-    // 3001번 포트 서버, WatermarkGenerationProcess
-    await this.watermarkQueue.add('watermark', {
-      videoId: movie.filename,
-      videoPath: movie.path,
-      watermarkPath: join(
-        process.cwd(),
-        'public',
-        'watermark',
-        'watermark1.png',
-      ),
-    });
-
-    // await this.thumbnailQueue.add(
-    //   'thumbnail',
-    //   {
-    //     videoId: movie.filename,
-    //     videoPath: movie.path,
-    //   },
-    //   // {
-    //   //   priority: 1, //낮을수록 우선순위가 높다.
-    //   //   delay: 100, //ms만큼 기다렸다 실행해라
-    //   //   attempts: 3, //실패시 n번까지 실행해라
-    //   //   lifo: true, //queue를 stack처럼 실행한다.
-    //   //   removeOnComplete: true, //작업 성공시 작업내용을 지운다.
-    //   //   removeOnFail: true, //작업 실패시 작업내용을 지운다.
-    //   // },
-    // );
-    return {
-      filename: movie.filename,
-    };
-  }
-
-  @Put('video/multer-s3/publish')
-  //todo: swagger 작성
-  async publishVideoS3() {}
-
   @Post('video/multer')
   @ApiCreateVideo()
   @UseInterceptors(MulterLocalVideoUpload())
   async createVideo(@UploadedFile() movie: Express.Multer.File) {
-    // 3001번 포트 서버, WatermarkGenerationProcess
+    try {
+      // 워터마크 큐에 작업 추가 (비동기로 처리)
+      const jobId = await this.watermarkQueue.add('watermark', {
+        videoId: movie.filename,
+        videoPath: movie.path,
+        watermarkPath: join(
+          process.cwd(),
+          'public',
+          'watermark',
+          'watermark1.png',
+        ),
+      });
 
-    await this.watermarkQueue.add('watermark', {
-      videoId: movie.filename,
-      videoPath: movie.path,
-      watermarkPath: join(
-        process.cwd(),
-        'public',
-        'watermark',
-        'watermark1.png',
-      ),
-    });
-
-    // await this.thumbnailQueue.add(
-    //   'thumbnail',
-    //   {
-    //     videoId: movie.filename,
-    //     videoPath: movie.path,
-    //   },
-    //   // {
-    //   //   priority: 1, //낮을수록 우선순위가 높다.
-    //   //   delay: 100, //ms만큼 기다렸다 실행해라
-    //   //   attempts: 3, //실패시 n번까지 실행해라
-    //   //   lifo: true, //queue를 stack처럼 실행한다.
-    //   //   removeOnComplete: true, //작업 성공시 작업내용을 지운다.
-    //   //   removeOnFail: true, //작업 실패시 작업내용을 지운다.
-    //   // },
-    // );
-    return {
-      filename: movie.filename,
-    };
+      return {
+        status: 'processing',
+        message: '워터마크 처리가 진행 중입니다.',
+        filename: movie.filename,
+        jobId: jobId.id,
+      };
+    } catch (error) {
+      console.error(`워터마크 처리 중 오류 발생: ${error.message}`);
+      return {
+        status: 'error',
+        message: `워터마크 처리 중 오류가 발생했습니다: ${error.message}`,
+        filename: movie.filename,
+      };
+    }
   }
 
   @Put('video/multer/publish')
@@ -127,6 +81,68 @@ export class CommonController {
     @Req() request: Request,
   ) {
     return this.multerService.renameMovieFile(body.filename, request);
+  }
+
+  @Put('video/multer/publish/s3')
+  @ApiPublishVideoS3()
+  async uploadToS3(@Body() body: UpdateLocalFilePathDto) {
+    try {
+      // 파일이 워터마크 처리가 완료되었는지 확인
+      const filename = body.filename;
+      const filenameWithoutExt = filename.includes('.')
+        ? filename.substring(0, filename.lastIndexOf('.'))
+        : filename;
+      const ext = filename.includes('.')
+        ? filename.substring(filename.lastIndexOf('.') + 1)
+        : 'mp4';
+
+      const watermarkFilename = `${filenameWithoutExt}_wm.${ext}`;
+      const originalPath = join(process.cwd(), 'public', 'temp', filename);
+      const watermarkPath = join(
+        process.cwd(),
+        'public',
+        'temp',
+        watermarkFilename,
+      );
+
+      // 원본 파일과 워터마크 파일이 존재하는지 확인
+      try {
+        await fs.access(originalPath);
+      } catch (error) {
+        throw new BadRequestException(
+          `원본 파일이 존재하지 않습니다: ${filename}`,
+        );
+      }
+
+      try {
+        await fs.access(watermarkPath);
+      } catch (error) {
+        throw new BadRequestException(
+          `워터마크 파일이 아직 생성되지 않았습니다. 워터마크 처리가 완료될 때까지 기다려주세요.`,
+        );
+      }
+
+      // S3에 원본 및 워터마크 파일 업로드
+      const s3Urls = await this.commonService.uploadMovieFilesToS3(filename);
+
+      return {
+        status: 'success',
+        message: 'S3 업로드가 완료되었습니다.',
+        originalUrl: s3Urls.originalUrl,
+        watermarkUrl: s3Urls.watermarkUrl,
+      };
+    } catch (error) {
+      console.error(`S3 업로드 중 오류 발생: ${error.message}`);
+
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      return {
+        status: 'error',
+        message: `S3 업로드 중 오류가 발생했습니다: ${error.message}`,
+      };
+    }
   }
 
   //todo: publish/movie/uuid까지의 파일경로 리스트 불러오기

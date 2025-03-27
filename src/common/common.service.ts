@@ -12,6 +12,8 @@ import { v4 as Uuid } from 'uuid';
 import { AwsService } from './aws.service'; // AwsService를 가져옵니다.
 import { ConfigService } from '@nestjs/config';
 import { envVariableKeys } from './const/env.const';
+import * as fs from 'fs';
+import { promises as fsPromises } from 'fs';
 
 @Injectable()
 export class CommonService {
@@ -176,6 +178,115 @@ export class CommonService {
         return false; // Object does not exist
       }
       throw error; // Other errors
+    }
+  }
+
+  /**
+   * 로컬에 저장된 파일을 S3에 업로드
+   * @param filename 파일명 (확장자 포함)
+   * @param sourcePath 로컬 파일 경로
+   * @param s3Key S3에 저장될 키 (경로 포함)
+   * @returns S3 URL
+   */
+  async uploadFileToS3(
+    filename: string,
+    sourcePath: string,
+    s3Key: string,
+  ): Promise<string> {
+    const s3Client = this.awsService.getS3Client();
+    const bucketName = this.configService.get<string>(
+      envVariableKeys.bucketName,
+    );
+    const region = this.configService.get<string>(envVariableKeys.awsRegion);
+
+    try {
+      // 파일 읽기
+      const fileContent = fs.readFileSync(sourcePath);
+
+      // S3에 업로드
+      await s3Client.send(
+        new PutObjectCommand({
+          Bucket: bucketName,
+          Key: s3Key,
+          Body: fileContent,
+          ContentType: 'video/mp4',
+          ACL: 'public-read',
+        }),
+      );
+
+      // S3 URL 반환
+      return `https://${bucketName}.s3.${region}.amazonaws.com/${s3Key}`;
+    } catch (error) {
+      console.error(`Error uploading file to S3: ${error.message}`);
+      throw new InternalServerErrorException(
+        `Failed to upload ${filename} to S3: ${error.message}`,
+      );
+    }
+  }
+
+  /**
+   * 원본 파일과 워터마크 파일을 S3에 업로드
+   * @param filename 파일명 (확장자 포함)
+   * @returns 업로드된 파일들의 S3 URL
+   */
+  async uploadMovieFilesToS3(
+    filename: string,
+    deleteLocalFiles = true,
+  ): Promise<{
+    originalUrl: string;
+    watermarkUrl: string;
+  }> {
+    try {
+      // 파일명에서 확장자 제거
+      const filenameWithoutExt = filename.includes('.')
+        ? filename.substring(0, filename.lastIndexOf('.'))
+        : filename;
+
+      const ext = filename.includes('.')
+        ? filename.substring(filename.lastIndexOf('.') + 1)
+        : 'mp4';
+
+      // 워터마크 파일명
+      const watermarkFilename = `${filenameWithoutExt}_wm.${ext}`;
+
+      // 로컬 파일 경로
+      const localDir = process.cwd();
+      const originalPath = `${localDir}/public/temp/${filename}`;
+      const watermarkPath = `${localDir}/public/temp/${watermarkFilename}`;
+
+      // S3 키 (경로)
+      const originalS3Key = `public/temp/${filename}`;
+      const watermarkS3Key = `public/temp/${watermarkFilename}`;
+
+      // 원본 파일과 워터마크 파일 S3에 업로드
+      const [originalUrl, watermarkUrl] = await Promise.all([
+        this.uploadFileToS3(filename, originalPath, originalS3Key),
+        this.uploadFileToS3(watermarkFilename, watermarkPath, watermarkS3Key),
+      ]);
+
+      // S3 업로드 후 로컬 파일 삭제 (옵션)
+      if (deleteLocalFiles) {
+        try {
+          await Promise.all([
+            fsPromises.unlink(originalPath),
+            fsPromises.unlink(watermarkPath),
+          ]);
+          console.log(`로컬 파일 삭제 완료: ${filename}, ${watermarkFilename}`);
+        } catch (deleteError) {
+          console.error(`로컬 파일 삭제 중 오류 발생: ${deleteError.message}`);
+          // 파일 삭제 오류는 무시하고 계속 진행
+        }
+      }
+
+      return {
+        originalUrl,
+        watermarkUrl,
+      };
+    } catch (error) {
+      console.error(`Error uploading movie files to S3: ${error.message}`);
+      throw new InternalServerErrorException(
+        `Failed to upload movie files to S3: ${error.message}`,
+      );
     }
   }
 }

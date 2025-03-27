@@ -1,10 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CommonService } from './common.service';
 import { CommonController } from './common.controller';
-import { MulterModule } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { join } from 'path';
-import { v4 } from 'uuid';
 import { TasksService } from './tasks.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Movie } from '../movie/entity/movie.entity';
@@ -13,25 +9,12 @@ import { BullModule } from '@nestjs/bullmq';
 import { MulterService } from './multer.service';
 import { CursorPaginationService } from './cursor-pagination.service';
 import { AwsService } from './aws.service';
+import { S3UploadInterceptor } from './interceptor/s3-upload.interceptor';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Movie]),
-    MulterModule.register({
-      storage: diskStorage({
-        destination: join(process.cwd(), 'public', 'temp'),
-        filename(req, file, cb) {
-          const split = file.originalname.split('.');
 
-          let ext = 'mp4';
-          if (split.length > 1) {
-            ext = split[split.length - 1];
-          }
-
-          cb(null, `${v4()}_${Date.now()}.${ext}`);
-        },
-      }),
-    }),
     //bullmq에 등록할 프로세스 작업명 세팅
     //사용할 서비스에서 등록해야 한다.
     BullModule.registerQueue(
@@ -51,6 +34,7 @@ import { AwsService } from './aws.service';
     CursorPaginationService,
     DefaultLogger,
     AwsService,
+    S3UploadInterceptor,
   ],
   exports: [CommonService, AwsService, DefaultLogger, CursorPaginationService],
 })

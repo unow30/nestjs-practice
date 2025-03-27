@@ -94,7 +94,7 @@ export function ApiCreateVideo() {
     ApiOperation({
       summary: '서버 폴더에 비디오 파일 업로드',
       description: `
-  ## multer 단일파일 업로드 시연용
+  ## multer 단일파일 업로드
   ## video/mp4만 업로드한다.
   ## 업로드시 서버폴더의 public/temp에 파일명이 uuid로 저장된다.
   ### - 원본 미디어는 uuid.mp4로 저장한다.
@@ -135,7 +135,37 @@ export function ApiPublishVideo() {
   ### - public/movie/uuid/wm.mp4   
   ### - 워터마크 파일이 완전히 생성되어야 이동 가능하다.
   ### - 이동 성공시 해당 경로를 서버에 get 요청하여 파일 확인 가능
-  ### - post multer/video 응답값인 filename을 입력한다.
+    `,
+    }),
+    ApiResponse({
+      status: 201,
+      description: '정적파일 배포상태로 변경',
+      schema: {
+        type: 'object',
+        properties: {
+          originalPath: {
+            type: 'string',
+            example: 'http://server-url/folder/path/origin.mp4',
+          },
+          watermarkPath: {
+            type: 'string',
+            example: 'http://server-url/folder/path/wm.mp4',
+          },
+        },
+      },
+    }),
+  );
+}
+
+export function ApiPublishVideoS3() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '정적파일 s3 temp폴더 업로드',
+      description: `
+  ## 정적파일 s3 temp폴더 업로드
+  ## 서버의 public/temp에 업로드한 uuid.mp4, uuid_wm.mp4파일을 s3 bucket/temp에 업로드한다.
+  ### - 워터마크 파일이 완전히 생성되어야 이동 가능하다.
+  ## - post movie에 응답값인 filename을 입력하면 해당 파일을 볼 수 있다.
     `,
     }),
     ApiResponse({

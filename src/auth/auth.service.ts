@@ -152,6 +152,13 @@ export class AuthService {
     const accessTokenSecret = this.configService.get<string>(
       envVariableKeys.accessTokenSecret,
     );
+
+    const expiresIn = isRefreshToken
+      ? '24h'
+      : process.env.ENV === 'dev'
+        ? '24h'
+        : '30m'; // 개발 환경에서는 24시간, 그 외에는 30분
+
     return await this.jwtService.signAsync(
       {
         sub: user.id,
@@ -160,7 +167,7 @@ export class AuthService {
       },
       {
         secret: isRefreshToken ? refreshTokenSecret : accessTokenSecret,
-        expiresIn: isRefreshToken ? '24h' : '24h',
+        expiresIn,
       },
     );
   }

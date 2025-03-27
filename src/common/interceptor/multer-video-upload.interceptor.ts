@@ -3,11 +3,10 @@ import { diskStorage } from 'multer';
 import { join } from 'path';
 import { v4 as Uuid } from 'uuid';
 
-export const MulterS3VideoUpload = () => {};
-
+// 로컬 파일 업로드
 export const MulterLocalVideoUpload = () => {
-  return FileInterceptor('video', {
-    storage: diskStorage({
+  return createFileInterceptor(
+    diskStorage({
       destination: join(process.cwd(), 'public', 'temp'),
       filename(req, file, cb) {
         const split = file.originalname.split('.');
@@ -18,6 +17,13 @@ export const MulterLocalVideoUpload = () => {
         cb(null, `${Uuid()}_${Date.now()}.${ext}`);
       },
     }),
+  );
+};
+
+// Refactor to improve reusability and readability
+const createFileInterceptor = (storage) => {
+  return FileInterceptor('video', {
+    storage,
     fileFilter: (req, file, cb) => {
       if (file.mimetype.includes('video/mp4')) {
         cb(null, true);

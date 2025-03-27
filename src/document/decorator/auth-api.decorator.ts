@@ -41,6 +41,7 @@ export function ApiLoginUser() {
   ## authorize 버튼 > 회원가입한 email, password 입력 후 로그인 버튼 클릭 >  header Authorization 생성
   ## 해당 api 실행하면 토큰 생성
   ## authorize 버튼 > bearer (http, Bearer)에 acceseToken 입력 후 로그인
+  ## 배포환경 accessToken 30분 만료, 개발환경에선 24시간 만료
  `,
     }),
     ApiResponse({
