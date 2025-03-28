@@ -33,6 +33,9 @@ database
 development tool & publish
 <img src="https://skillicons.dev/icons?i=webstorm,git,github,aws&perline=4" alt="Tech Stack" />
 
+## schema
+![schema.png](src/document/schema.png)
+
 ## Project setup
 
 ```bash
