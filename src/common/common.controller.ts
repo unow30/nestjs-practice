@@ -35,7 +35,7 @@ export class CommonController {
     private readonly watermarkQueue: Queue,
   ) {}
 
-  @Post('/presigned-url')
+  @Post('presigned-url')
   @ApiCreatePresignedUrl()
   async createPresignedUrl() {
     return await this.commonService.createPresignedUrl();

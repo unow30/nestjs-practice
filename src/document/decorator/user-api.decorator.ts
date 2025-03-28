@@ -167,22 +167,3 @@ export function ApiUserDelete() {
     }),
   );
 }
-
-// export function ApiGetMovies() {
-//   return applyDecorators(
-//     ApiOperation({
-//       summary: '영화 리스트 가져오기',
-//       description: `
-// ## cursor pagination
-// ## movie entity의 칼럼명에 오름차순, 내림차순을 입력하여 정렬한다.
-//   ex:['id_DESC'], ['id_DESC', 'title_ASC', 'likeCount_DESC']
-// ## cursor값을 받아 입력하면 다음 패이징한 값을 받을 수 있다.
-//   cursor는 base64로 인코딩되며 클라이언트가 이를 해석할 필요 없다.`,
-//     }),
-//     ApiResponse({
-//       status: 200,
-//       description: '영화 리스트',
-//       type: '',
-//     }),
-//   );
-// }

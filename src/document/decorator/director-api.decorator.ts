@@ -20,9 +20,9 @@ export function ApiDirectorCreate() {
 export function ApiDirectorFindAll() {
   return applyDecorators(
     ApiOperation({
-      summary: '감독 목록 불러오기',
+      summary: '영화 감독 목록 불러오기',
       description: `
-## 감독 목록 불러오기`,
+## 영화 감독 목록 불러오기`,
     }),
     ApiResponse({
       status: 200,
@@ -35,9 +35,9 @@ export function ApiDirectorFindAll() {
 export function ApiDirectorFindOne() {
   return applyDecorators(
     ApiOperation({
-      summary: '감독 하나 가져오기',
+      summary: '영화 감독 하나 가져오기',
       description: `
-## 감독 하나 가져오기`,
+## 영화 감독 하나 가져오기`,
     }),
     ApiResponse({
       status: 200,
@@ -50,13 +50,13 @@ export function ApiDirectorFindOne() {
 export function ApiDirectorUpdate() {
   return applyDecorators(
     ApiOperation({
-      summary: '감독 변경하기',
+      summary: '영화 감독 변경하기',
       description: `
-## 감독 변경하기`,
+## 영화 감독 변경하기`,
     }),
     ApiResponse({
       status: 200,
-      description: '감독 변경하기',
+      description: '영화 감독 변경하기',
       type: DirectorDto,
     }),
   );
@@ -65,9 +65,9 @@ export function ApiDirectorUpdate() {
 export function ApiDirectorDelete() {
   return applyDecorators(
     ApiOperation({
-      summary: '감독 제거하기',
+      summary: '영화 감독 제거하기',
       description: `
-## 감독 제거하기
+## 영화 감독 제거하기
 ## 감독과 연계된 영화 목록이 사라질 수 있으니 주의`,
     }),
     ApiResponse({

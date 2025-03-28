@@ -20,9 +20,9 @@ export function ApiGenreCreate() {
 export function ApiGenreFindAll() {
   return applyDecorators(
     ApiOperation({
-      summary: '장르 목록 불러오기',
+      summary: '영화 장르 목록 불러오기',
       description: `
-## 장르 목록 불러오기`,
+## 영화 장르 목록 불러오기`,
     }),
     ApiResponse({
       status: 200,
@@ -35,9 +35,9 @@ export function ApiGenreFindAll() {
 export function ApiGenreFindOne() {
   return applyDecorators(
     ApiOperation({
-      summary: '장르 하나 가져오기',
+      summary: '영화 장르 불러오기',
       description: `
-## 장르 하나 가져오기`,
+## 영화 장르 하나 가져오기`,
     }),
     ApiResponse({
       status: 200,
@@ -50,13 +50,13 @@ export function ApiGenreFindOne() {
 export function ApiGenreUpdate() {
   return applyDecorators(
     ApiOperation({
-      summary: '장르 변경하기',
+      summary: '영화 장르 변경하기',
       description: `
-## 장르 변경하기`,
+## 영화 장르 변경하기`,
     }),
     ApiResponse({
       status: 200,
-      description: '장르 변경하기',
+      description: '영화 장르 변경하기',
       type: GenreDto,
     }),
   );
@@ -65,13 +65,13 @@ export function ApiGenreUpdate() {
 export function ApiGenreDelete() {
   return applyDecorators(
     ApiOperation({
-      summary: '장르 제거하기',
+      summary: '영화 장르 제거하기',
       description: `
-## 장르 제거하기`,
+## 영화 장르 제거하기`,
     }),
     ApiResponse({
       status: 200,
-      description: '장르 제거하기',
+      description: '영화 장르 제거하기',
       schema: {
         type: 'object',
         properties: {

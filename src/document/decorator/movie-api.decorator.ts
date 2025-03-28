@@ -10,7 +10,7 @@ import {
 export function ApiGetMovieRecent() {
   return applyDecorators(
     ApiOperation({
-      summary: '최신 영화 리스트 보기',
+      summary: '최신 영화 목록 불러오기',
       description: `
 ## 생성일자 기준 내림차순으로 영화 정렬하기
 ## 처음 불러온 데이터를 5분동안 캐싱(Cache Manager)`,
@@ -153,7 +153,7 @@ export function ApiDeleteMovie() {
 export function ApiGetMovie() {
   return applyDecorators(
     ApiOperation({
-      summary: '영화 선택하기',
+      summary: '영화 불러오기',
       description: `
 ## 선택한 영화는 캐싱되어 'api movie/my-pick' 에서 확인 가능 (Cache Manager)`,
     }),

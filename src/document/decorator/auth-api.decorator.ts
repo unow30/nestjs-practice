@@ -5,7 +5,7 @@ import { LoginDto, UserDto, UserToken } from '../../user/dto/response/user.dto';
 export function ApiRegisterUser() {
   return applyDecorators(
     ApiOperation({
-      summary: '유저 회원가입',
+      summary: '사용자 회원가입',
       description: `
   ## email, password를 base 64 encoding 후 header authorizaion으로 보낸다.
   ## authorize 버튼 > 새로운 email, password 입력 후 로그인 버튼 클릭시 header Authorization 생성 
@@ -14,7 +14,7 @@ export function ApiRegisterUser() {
     }),
     ApiResponse({
       status: 201,
-      description: '유저 회원가입',
+      description: '사용자 회원가입',
       type: UserDto,
     }),
     ApiResponse({
@@ -35,7 +35,7 @@ export function ApiRegisterUser() {
 export function ApiLoginUser() {
   return applyDecorators(
     ApiOperation({
-      summary: '유저 로그인',
+      summary: '사용자 로그인',
       description: `
   ## email, password를 base 64 encoding 후 header authorizaion으로 보낸다.
   ## authorize 버튼 > 회원가입한 email, password 입력 후 로그인 버튼 클릭 >  header Authorization 생성
@@ -46,7 +46,7 @@ export function ApiLoginUser() {
     }),
     ApiResponse({
       status: 201,
-      description: '유저 회원가입',
+      description: '사용자 회원가입',
       type: UserToken,
     }),
   );
@@ -55,10 +55,10 @@ export function ApiLoginUser() {
 export function ApiBlockToken() {
   return applyDecorators(
     ApiOperation({
-      summary: '유저 토큰 차단',
+      summary: '사용자 토큰 차단',
       description: `
   ## 관리자 기능      
-  ## 특정 유저의 토큰을 입력하여 토큰을 임시 차단시킨다
+  ## 특정 사용자의 토큰을 입력하여 토큰을 임시 차단시킨다
   ## 토큰이 필요한 접근시 캐싱이 해지될 때까지 토큰 필요한 접근 제한됨 `,
     }),
     ApiBody({
@@ -93,9 +93,9 @@ export function ApiBlockToken() {
 export function ApiLoginUserPassport() {
   return applyDecorators(
     ApiOperation({
-      summary: '유저 로그인 local passport 방식',
+      summary: '사용자 로그인 local passport 방식',
       description: `
-  ## 유저 로그인 local passport 방식
+  ## 사용자 로그인 local passport 방식
   ## 해당 api 실행하면 토큰 생성
   ## authorize 버튼 > bearer (http, Bearer)에 acceseToken 입력 후 로그인`,
     }),
@@ -127,6 +127,17 @@ export function ApiRotateAccessToken() {
         type: 'string',
         example: 'Bearer 리프레시토큰',
       },
+    }),
+  );
+}
+
+export function ApiPrivate() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '로그인 유저의 access token정보 확인용',
+      description: `
+  ## 로그인 유저의 토큰정보 확인용
+  `,
     }),
   );
 }
