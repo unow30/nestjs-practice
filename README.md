@@ -1,12 +1,9 @@
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
+<p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
@@ -19,12 +16,22 @@
     <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
   <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+## NestJs Test API Documentation
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## swagger doc
+https://ceramic-tager.store/doc
+open time: 11:00 ~ 20:00 (utc +9)
+## tech stack
+
+language, framework
+<img src="https://skillicons.dev/icons?i=js,ts,nodejs,nestjs&perline=4" alt="Tech Stack" />
+
+database
+<img src="https://skillicons.dev/icons?i=postgres,redis,&perline=4" alt="Tech Stack" />
+
+development tool & publish
+<img src="https://skillicons.dev/icons?i=webstorm,git,github,aws&perline=4" alt="Tech Stack" />
 
 ## Project setup
 
@@ -39,25 +46,18 @@ $ pnpm install
 $ pnpm run start
 
 # watch mode
-$ pnpm run start:dev
+$ pnpm run start:dev #(3000 port)
+
+# watch mode worker
+$ pnpm run start:dev:worker #(3001 port)
 
 # production mode
 $ pnpm run start:prod
+
+# production mode worker
+$ pnpm run start:prod:worker #(3001 port)
+
 ```
-
-## Run tests
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
@@ -71,29 +71,102 @@ $ mau deploy
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
-## Resources
+# server descripton
 
-Check out a few resources that may come in handy when working with NestJS:
+<details> <summary><strong>서버 정보</strong></summary>
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- 서버 실행시간: 11:00 ~ 20:00
 
-## Support
+- Swagger 문서: [https://ceramic-tager.store/doc](https://ceramic-tager.store/doc)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- 미디어 생성 서버: 3000 port
 
-## Stay in touch
+- 영상 편집 서버: 3001 port
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
+</details> <details> <summary><strong>영화 (Movie)</strong></summary>
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- 영화 목록 불러오기
+
+- 영화 생성하기
+
+- 최신 영화 리스트 가져오기
+
+- 영화 불러오기
+
+- 영화 수정하기
+
+- 영화 삭제하기
+
+- 영화 좋아요
+
+- 영화 싫어요
+
+
+</details> <details> <summary><strong>공통 기능 (Common)</strong></summary>
+
+- presigned-url 생성
+
+- 서버 폴더에 비디오 파일 업로드
+
+- 업로드파일 serve-static으로 접근하기
+
+- serve-static으로 접근가능한 영상 목록 보기
+
+- 비디오파일 s3 temp폴더 업로드
+
+
+</details> <details> <summary><strong>영화 감독 (Director)</strong></summary>
+
+- 영화 감독 생성하기
+
+- 영화 감독 목록 불러오기
+
+- 영화 감독 불러오기
+
+- 영화 감독 변경하기
+
+- 영화 감독 제거하기
+
+
+</details> <details> <summary><strong>영화 장르 (Genre)</strong></summary>
+
+- 영화 장르 생성하기
+
+- 영화 장르 목록 불러오기
+
+- 영화 장르 가져오기
+
+- 영화 장르 변경하기
+
+- 영화 장르 제거하기
+
+
+</details> <details> <summary><strong>인증 (Auth)</strong></summary>
+
+- 사용자 회원가입
+
+- 사용자 로그인
+
+- 사용자 로그인 passport 방식
+
+- 사용자 토큰 갱신하기
+
+
+</details> <details> <summary><strong>사용자 (User)</strong></summary>
+
+- 사용자 목록 불러오기
+
+- 사용자 불러오기
+
+- 사용자 업데이트
+
+- 사용자 제거하기
+
+
+</details> <details> <summary><strong>헬스 체크 (Health)</strong></summary>
+
+- load balancer 헬스체크
+
+
+</details> 
