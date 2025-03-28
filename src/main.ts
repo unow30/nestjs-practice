@@ -6,6 +6,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as ffmpeg from '@ffmpeg-installer/ffmpeg';
 import * as ffmpegFluent from 'fluent-ffmpeg';
 import * as ffprobe from 'ffprobe-static';
+import * as fs from 'fs';
+import { join } from 'path';
+
+const markdownContent = fs.readFileSync(
+  join(process.cwd(), 'src', 'document', 'swagger-readme.md'),
+  'utf8',
+);
 
 ffmpegFluent.setFfmpegPath(ffmpeg.path);
 ffmpegFluent.setFfprobePath(ffprobe.path);
@@ -17,7 +24,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('netflix test')
-    .setDescription('netflix test')
+    .setDescription(markdownContent)
     .setVersion('1.0')
     .addBasicAuth()
     .addBearerAuth()

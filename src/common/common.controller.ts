@@ -109,6 +109,7 @@ export class CommonController {
       try {
         await fs.access(originalPath);
       } catch (error) {
+        console.error('origin file access error:', error);
         throw new BadRequestException(
           `원본 파일이 존재하지 않습니다: ${filename}`,
         );
@@ -117,6 +118,7 @@ export class CommonController {
       try {
         await fs.access(watermarkPath);
       } catch (error) {
+        console.error('watermark file access error:', error);
         throw new BadRequestException(
           `워터마크 파일이 아직 생성되지 않았습니다. 워터마크 처리가 완료될 때까지 기다려주세요.`,
         );
