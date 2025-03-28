@@ -96,8 +96,8 @@ import { ApiResponseInterceptor } from './common/interceptor/response-json.inter
       inject: [ConfigService],
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'public'),
-      serveRoot: '/public/',
+      rootPath: join(process.cwd(), 'public/movie'),
+      serveRoot: '/public/movie',
     }),
     MovieModule,
     DirectorModule,
