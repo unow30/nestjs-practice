@@ -19,18 +19,24 @@
 
 ## NestJs Test API Documentation
 
+## Todo
+- 업로드한 정적 파일 nginx로 전송하기
+- s3 업로드파일 cdn으로 전송하기
+
 ## swagger doc
-https://ceramic-tager.store/doc
-open time: 11:00 ~ 20:00 (utc +9)
+<p>https://ceramic-tager.store/doc</p>
+
+<p>open time: 11:00 ~ 20:00 (utc +9)</p>
+
 ## tech stack
 
-language, framework
-<img src="https://skillicons.dev/icons?i=js,ts,nodejs,nestjs&perline=4" alt="Tech Stack" />
+<p>language, framework, server</p>
+<img src="https://skillicons.dev/icons?i=js,ts,nodejs,nestjs,nginx&perline=5" alt="Tech Stack" />
 
-database
+<p>database</p>
 <img src="https://skillicons.dev/icons?i=postgres,redis,&perline=4" alt="Tech Stack" />
 
-development tool & publish
+<p>development tool & publish</p>
 <img src="https://skillicons.dev/icons?i=webstorm,git,github,aws&perline=4" alt="Tech Stack" />
 
 ## schema
