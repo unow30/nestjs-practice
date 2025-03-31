@@ -31,7 +31,7 @@ import * as fs from 'fs/promises';
 export class CommonController {
   constructor(
     private readonly commonService: CommonService,
-    private readonly multerService: MulterService,
+    private readonly fileSystemService: FileSystemService,
     @InjectQueue('watermark-generation')
     private readonly watermarkQueue: Queue,
   ) {}
@@ -152,7 +152,4 @@ export class CommonController {
       };
     }
   }
-
-  //todo: publish/movie/uuid까지의 파일경로 리스트 불러오기
-  async getStaticVideo() {}
 }
