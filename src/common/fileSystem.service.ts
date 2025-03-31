@@ -51,28 +51,63 @@ export class FileSystemService {
     }
   }
 
-  async getStaticVideoPath(req: Request) {
+  async getStaticVideoPath(req: Request, page: number, pageSize: number) {
     const basePath = this.resolvePath(this.PATHS.movie);
     const baseURL = `${req.protocol}://${req.get('host')}/${this.PATHS.movie}`;
 
     try {
       const folders = await fs.readdir(basePath);
-      return folders.reduce(
-        async (accPromise, folder) => {
-          const acc = await accPromise;
-          const folderPath = join(basePath, folder);
 
-          if ((await fs.lstat(folderPath)).isDirectory()) {
-            const files = await fs.readdir(folderPath);
-            acc.push(...files.map((file) => `${baseURL}/${folder}/${file}`));
+      const totalItems = folders.length * 2; // 각 폴더에 최대 2개의 파일이 있다고 가정
+      const totalPages = Math.ceil(totalItems / pageSize);
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+
+      let currentIndex = 0; // 현재까지 처리한 파일의 인덱스
+      const paginatedFiles: string[] = [];
+
+      for (const folder of folders) {
+        const folderPath = join(basePath, folder);
+
+        if ((await fs.lstat(folderPath)).isDirectory()) {
+          const files = await fs.readdir(folderPath);
+
+          for (const file of files) {
+            if (currentIndex >= startIndex && currentIndex < endIndex) {
+              paginatedFiles.push(`${baseURL}/${folder}/${file}`);
+            }
+
+            currentIndex++;
+
+            // 필요한 범위를 모두 처리했으면 순회를 중단
+            if (currentIndex >= endIndex) break;
           }
-          return acc;
+        }
+
+        // 폴더 순회도 중단
+        if (currentIndex >= endIndex) break;
+      }
+
+      return {
+        data: paginatedFiles,
+        meta: {
+          totalItems,
+          totalPages,
+          currentPage: page,
+          pageSize,
         },
-        Promise.resolve([] as string[]),
-      );
+      };
     } catch (error) {
       this.handleFsError(error);
-      return [];
+      return {
+        data: [],
+        meta: {
+          totalItems: 0,
+          totalPages: 0,
+          currentPage: page,
+          pageSize,
+        },
+      };
     }
   }
 

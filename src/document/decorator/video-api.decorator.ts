@@ -3,6 +3,7 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiParam,
   ApiResponse,
 } from '@nestjs/swagger';
 
@@ -216,6 +217,31 @@ export function ApiPublishVideoS3() {
           },
         },
       },
+    }),
+  );
+}
+
+export function ApiGetStaticVideoPath() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '서버 폴더의 비디오 파일 리스트',
+      description: `
+  ## public/movie 폴더의 영상 리스트 제공
+      `,
+    }),
+    ApiParam({
+      name: 'page',
+      type: Number,
+      required: false,
+      description: '페이지 번호, 기본값은 1',
+      example: 1,
+    }),
+    ApiParam({
+      name: 'pageSize',
+      type: Number,
+      required: false,
+      description: '한 페이지에 포함될 항목 수, 기본값은 12',
+      example: 12,
     }),
   );
 }

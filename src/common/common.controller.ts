@@ -8,6 +8,7 @@ import {
   UseInterceptors,
   BadRequestException,
   Get,
+  Param,
 } from '@nestjs/common';
 import { CommonService } from './common.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -23,6 +24,7 @@ import {
   ApiCreateVideo,
   ApiPublishVideoS3,
   ApiPublishVideo,
+  ApiGetStaticVideoPath,
 } from '../document/decorator/video-api.decorator';
 import * as fs from 'fs/promises';
 
@@ -75,9 +77,14 @@ export class CommonController {
     }
   }
 
-  @Get('video/multer')
-  async getStaticVideo2(@Req() req: Request) {
-    return await this.fileSystemService.getStaticVideoPath(req);
+  @Get('video/multer/:page/:pageSize')
+  @ApiGetStaticVideoPath()
+  async getStaticVideoPath(
+    @Req() req: Request,
+    @Param('page') page: number,
+    @Param('pageSize') pageSize: number,
+  ) {
+    return await this.fileSystemService.getStaticVideoPath(req, page, pageSize);
   }
 
   @Put('video/multer/publish')
