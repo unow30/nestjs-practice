@@ -20,6 +20,7 @@
 ## NestJs Test API Documentation
 
 ## Todo
+- ~~업로드한 정적 파일 리스트 불러오기~~ [v]
 - 업로드한 정적 파일 nginx로 전송하기
 - s3 업로드파일 cdn으로 전송하기
 
