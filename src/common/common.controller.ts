@@ -7,6 +7,7 @@ import {
   UploadedFile,
   UseInterceptors,
   BadRequestException,
+  Get,
 } from '@nestjs/common';
 import { CommonService } from './common.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -14,7 +15,7 @@ import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 import { UpdateLocalFilePathDto } from '../movie/dto/update-local-filepath.dto';
 import { Request } from 'express';
-import { MulterService } from './multer.service';
+import { FileSystemService } from './fileSystem.service';
 import { join } from 'path';
 import { MulterLocalVideoUpload } from './interceptor/multer-video-upload.interceptor';
 import {
@@ -74,13 +75,18 @@ export class CommonController {
     }
   }
 
+  @Get('video/multer')
+  async getStaticVideo2(@Req() req: Request) {
+    return await this.fileSystemService.getStaticVideoPath(req);
+  }
+
   @Put('video/multer/publish')
   @ApiPublishVideo()
   async publishVideo(
     @Body() body: UpdateLocalFilePathDto,
     @Req() request: Request,
   ) {
-    return this.multerService.renameMovieFile(body.filename, request);
+    return this.fileSystemService.renameMovieFile(body.filename, request);
   }
 
   @Put('video/multer/publish/s3')

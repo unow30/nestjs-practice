@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Movie } from '../movie/entity/movie.entity';
 import { DefaultLogger } from './logger/default.logger';
 import { BullModule } from '@nestjs/bullmq';
-import { MulterService } from './multer.service';
+import { FileSystemService } from './fileSystem.service';
 import { CursorPaginationService } from './cursor-pagination.service';
 import { AwsService } from './aws.service';
 import { S3UploadInterceptor } from './interceptor/s3-upload.interceptor';
@@ -30,7 +30,7 @@ import { S3UploadInterceptor } from './interceptor/s3-upload.interceptor';
   providers: [
     CommonService,
     TasksService,
-    MulterService,
+    FileSystemService,
     CursorPaginationService,
     DefaultLogger,
     AwsService,
