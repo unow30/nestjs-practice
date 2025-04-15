@@ -36,6 +36,8 @@ export class CommonController {
     private readonly fileSystemService: FileSystemService,
     @InjectQueue('watermark-generation')
     private readonly watermarkQueue: Queue,
+    @InjectQueue('thumbnail-generation')
+    private readonly thumbnailQueue: Queue,
   ) {}
 
   @Post('presigned-url')
@@ -49,6 +51,12 @@ export class CommonController {
   @UseInterceptors(MulterLocalVideoUpload())
   async createVideo(@UploadedFile() movie: Express.Multer.File) {
     try {
+      // 썸네일 작업 추가 (비동기로 처리)
+      await this.thumbnailQueue.add('thumbnail', {
+        videoId: movie.filename,
+        videoPath: movie.path,
+      });
+
       // 워터마크 큐에 작업 추가 (비동기로 처리)
       const jobId = await this.watermarkQueue.add('watermark', {
         videoId: movie.filename,
