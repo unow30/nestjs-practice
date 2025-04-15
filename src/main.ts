@@ -24,7 +24,7 @@ async function bootstrap() {
 
   // CORS 설정 추가
   app.enableCors({
-    origin: ['http://localhost:3010'],
+    origin: ['http://localhost:3010', 'https://ceramic-tager.store'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
