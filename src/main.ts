@@ -22,6 +22,13 @@ async function bootstrap() {
     // logger: false, // 기본 NestJS Logger 비활성화 ㅁ
   });
 
+  // CORS 설정 추가
+  app.enableCors({
+    origin: ['http://localhost:3010', 'https://ceramic-tager.store'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle('netflix test')
     .setDescription(markdownContent)

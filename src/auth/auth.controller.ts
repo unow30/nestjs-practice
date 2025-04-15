@@ -19,11 +19,15 @@ import {
   ApiRotateAccessToken,
 } from '../document/decorator/auth-api.decorator';
 import { UserDto, UserToken } from '../user/dto/response/user.dto';
+import { UserService } from '../user/user.service';
 
 @Controller('auth')
 @ApiBearerAuth()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @Public()
   @ApiBasicAuth()
@@ -83,5 +87,12 @@ export class AuthController {
   @Get('private')
   async private(@Request() req) {
     return req.user;
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async me(@Request() req) {
+    const user = await this.userService.findOne(req.user.sub);
+    return { id: user.id, email: user.email, role: user.role };
   }
 }
