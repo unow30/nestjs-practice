@@ -140,6 +140,6 @@ jobs:
             --source-bundle S3Bucket="nestjs-presigned-url-test-bucket",S3Key="deploy.zip"
           
           aws elasticbeanstalk update-environment \
-            --application-name "eb_test_app" \
-            --environment-name "Ebtestapp-env" \
+            --application-name "Ebtestapp-2" \
+            --environment-name "Ebtestapp-2-env" \
             --version-label $GITHUB_SHA
