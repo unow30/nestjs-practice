@@ -15,12 +15,10 @@ export function ApiCreatePresignedUrl() {
   ## frontend 연계형 파일 업로드 방식
   ### - frontend에서 원본, 편집영상을 업로드한다고 가정한다.  
   ## 5분간 지속되는 s3 업로드 링크를 생성한다.
-  ### - origin.mp4, wm.mp4 파일을 업로드하는 url을 2개 생성한다.
   ## 영상 파일을 바이너리 형식으로 body에 담은 다음 해당 링크를 put 요청으로 실행한다.
   ### - put요청 성공시 파일은 s3 bucket-name/public/temp/filename(uuid)으로 저장한다.
   ## 서버에서 파일 경로 변경 api를 실행하면 파일을 불러올 수 있다.
-     s3 bucket-name/public/temp/uuid/origin.mp4
-     s3 bucket-name/public/temp/uuid/wm.mp4 
+     s3 bucket-name/public/temp/uuid/origin.mp4 
     `,
     }),
     ApiResponse({
@@ -48,10 +46,6 @@ export function ApiCreatePresignedUrl() {
               {
                 filename: 'uuid.mp4',
                 url: 'pre-signed-url-for-original-video',
-              },
-              {
-                filename: 'uuid_wm.mp4',
-                url: 'pre-signed-url-for-watermarked-video',
               },
             ],
           },

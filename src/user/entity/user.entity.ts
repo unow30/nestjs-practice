@@ -43,7 +43,7 @@ export class User extends BaseTable {
     default: Role.user,
   })
   @ApiProperty({
-    description: '사용자 권한. 0:일반, 1:구독, 2:관리자 기본값 일반',
+    description: '사용자 권한. 0:관리자, 1:구독, 2:일반 기본값 일반',
   })
   role: Role;
 

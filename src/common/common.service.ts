@@ -26,7 +26,7 @@ export class CommonService {
     const s3Client = this.awsService.getS3Client(); // AwsService에서 S3Client 가져오기
     const uuid = Uuid();
     const originalFilename = `${uuid}.mp4`;
-    const watermarkedFilename = `${uuid}_wm.mp4`;
+    // const watermarkedFilename = `${uuid}_wm.mp4`;
 
     const bucketName = this.configService.get<string>(
       envVariableKeys.bucketName,
@@ -42,30 +42,38 @@ export class CommonService {
     };
 
     // 워터마크 파일 파라미터
-    const watermarkedParams = {
-      Bucket: bucketName,
-      Key: `${basePath}/${watermarkedFilename}`,
-      ACL: ObjectCannedACL.public_read,
-      ContentType: 'video/mp4',
-    };
+    // const watermarkedParams = {
+    //   Bucket: bucketName,
+    //   Key: `${basePath}/${watermarkedFilename}`,
+    //   ACL: ObjectCannedACL.public_read,
+    //   ContentType: 'video/mp4',
+    // };
 
     try {
       // 두 개의 presigned URL을 병렬로 생성
-      const [originalUrl, watermarkedUrl] = await Promise.all([
-        getSignedUrl(s3Client, new PutObjectCommand(originalParams), {
+      // const [originalUrl, watermarkedUrl] = await Promise.all([
+      //   getSignedUrl(s3Client, new PutObjectCommand(originalParams), {
+      //     expiresIn,
+      //   }),
+      //   getSignedUrl(s3Client, new PutObjectCommand(watermarkedParams), {
+      //     expiresIn,
+      //   }),
+      // ]);
+
+      const originalUrl = await getSignedUrl(
+        s3Client,
+        new PutObjectCommand(originalParams),
+        {
           expiresIn,
-        }),
-        getSignedUrl(s3Client, new PutObjectCommand(watermarkedParams), {
-          expiresIn,
-        }),
-      ]);
+        },
+      );
 
       return [
         { filename: originalFilename, url: originalUrl },
-        {
-          filename: watermarkedFilename,
-          url: watermarkedUrl,
-        },
+        // {
+        //   filename: watermarkedFilename,
+        //   url: watermarkedUrl,
+        // },
       ];
     } catch (e) {
       console.error(e);
