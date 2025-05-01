@@ -198,6 +198,16 @@ export class MovieService {
       );
     }
 
+    const movieExist = await qr.manager.findOne(Movie, {
+      where: { title: createMovieDto.title },
+    });
+
+    if (movieExist) {
+      throw new NotFoundException(
+        `이미 존재하는 영화재목입니다! title -> ${movieExist.title}`,
+      );
+    }
+
     const movieDetail = await qr.manager
       .createQueryBuilder()
       .insert()
@@ -250,7 +260,7 @@ export class MovieService {
       });
 
       if (!movie) {
-        throw new NotFoundException('존재하지 않는 영화의 id 입니다.');
+        throw new NotFoundException('존재하지 않는 영화의 id 입니다!');
       }
 
       const movieDetailId = movie.movieDetail.id;
