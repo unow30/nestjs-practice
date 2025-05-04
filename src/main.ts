@@ -26,7 +26,6 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3010',
-      'https://ceramic-tager.store',
       'http://ceramic-tager.store.s3-website.ap-northeast-2.amazonaws.com',
       'https://www.ceramic-tager.store',
       'https://ceramic-tager.store',

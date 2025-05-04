@@ -25,7 +25,7 @@
 - s3 업로드파일 cdn으로 전송하기
 
 ## swagger doc
-<p>https://ceramic-tager.store/doc</p>
+<p>https://api.ceramic-tager.store/doc</p>
 
 <p>open time: 11:00 ~ 20:00 (utc +9)</p>
 
@@ -87,12 +87,11 @@ With Mau, you can deploy your application in just a few clicks, allowing you to 
 
 - 서버 실행시간: 11:00 ~ 20:00
 
-- Swagger 문서: [https://ceramic-tager.store/doc](https://ceramic-tager.store/doc)
+- Swagger 문서: [https://api.ceramic-tager.store/doc](https://api.ceramic-tager.store/doc)
 
 - 미디어 생성 서버: 3000 port
 
 - 영상 편집 서버: 3001 port
-
 
 </details> <details> <summary><strong>영화 (Movie)</strong></summary>
 
