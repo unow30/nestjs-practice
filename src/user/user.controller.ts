@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserDto } from './dto/response/user.dto';
 import {
   ApiUserDelete,
@@ -24,6 +24,7 @@ import { UserId } from './decorator/user-id.decorator';
 
 @Controller('user')
 @ApiBearerAuth()
+@ApiTags('user')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {}

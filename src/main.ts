@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as ffmpeg from '@ffmpeg-installer/ffmpeg';
@@ -20,6 +20,11 @@ ffmpegFluent.setFfprobePath(ffprobe.path);
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     // logger: false, // 기본 NestJS Logger 비활성화 ㅁ
+  });
+
+  // URI 버전 관리 활성화
+  app.enableVersioning({
+    type: VersioningType.URI,
   });
 
   // CORS 설정 추가
@@ -44,9 +49,36 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
+  // API 태그 순서 지정
+  const customTagsOrder = [
+    'auth',
+    'user',
+    'common',
+    'genre',
+    'director',
+    'movie',
+    'health',
+  ];
+  
+  // 명시적으로 tags 배열 재정렬
+  if (document.tags) {
+    document.tags.sort((a, b) => {
+      const aIndex = customTagsOrder.indexOf(a.name);
+      const bIndex = customTagsOrder.indexOf(b.name);
+
+      // 목록에 없는 태그는 맨 뒤로
+      if (aIndex === -1) return 1;
+      if (bIndex === -1) return -1;
+
+      return aIndex - bIndex;
+    });
+  }
+
   SwaggerModule.setup('doc', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
+      tagsSorter: 'alpha', // 클라이언트 측에서는 단순히 알파벳 순 정렬 유지
+      operationsSorter: 'alpha',
     },
   });
 
@@ -63,4 +95,5 @@ async function bootstrap() {
   );
   await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap();

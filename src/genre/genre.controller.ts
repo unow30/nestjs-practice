@@ -13,7 +13,7 @@ import {
 import { GenreService } from './genre.service';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GenreDto } from './dto/response/genre.dto';
 import {
   ApiGenreCreate,
@@ -25,6 +25,7 @@ import {
 
 @Controller('genre')
 @ApiBearerAuth()
+@ApiTags('genre')
 @UseInterceptors(ClassSerializerInterceptor)
 export class GenreController {
   constructor(private readonly genreService: GenreService) {}

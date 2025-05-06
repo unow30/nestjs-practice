@@ -6,6 +6,7 @@ import {
   ApiParam,
   ApiResponse,
 } from '@nestjs/swagger';
+import { PresignedUrlV2Dto } from '../../common/dto/presigned-url-v2.dto';
 
 export function ApiCreatePresignedUrl() {
   return applyDecorators(
@@ -29,12 +30,53 @@ export function ApiCreatePresignedUrl() {
         properties: {
           data: {
             type: 'array',
+            example: [
+              {
+                filename: 'uuid.mp4',
+                url: 'pre-signed-url-for-original-video',
+              },
+            ],
+          },
+        },
+      },
+    }),
+  );
+}
+
+export function ApiCreatePresignedUrlV2() {
+  return applyDecorators(
+    ApiOperation({
+      summary: 'presigned url V2 생성 (filename과 contentType 직접 지정)',
+      description: `
+  ## frontend 연계형 파일 업로드 방식 V2
+  ### - 기존 createPresignedUrl과 유사하지만 filename과 contentType을 직접 지정할 수 있습니다.
+  ## filename은 UUID 형식에 확장자가 포함된 문자열입니다.
+  ### - 예: 536d75f1-754b-4888-8575-9d733d8c6886.mp4, 536d75f1-754b-4888-8575-9d733d8c6886.jpg
+  ## contentType은 파일의 데이터 형식을 나타냅니다.
+  ### - 예: video/mp4, image/jpg, image/jpeg
+  ## 5분간 지속되는 s3 업로드 링크를 생성합니다.
+  ## 파일을 바이너리 형식으로 body에 담은 다음 해당 링크를 put 요청으로 실행합니다.
+  ### - put요청 성공시 파일은 s3 bucket-name/public/temp/filename으로 저장됩니다.
+    `,
+    }),
+    ApiBody({
+      type: PresignedUrlV2Dto,
+      description: 'filename과 contentType 정보',
+    }),
+    ApiResponse({
+      status: 201,
+      description: 'presigned-url 생성',
+      schema: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'array',
             items: {
               type: 'object',
               properties: {
                 filename: {
                   type: 'string',
-                  example: 'uuid.mp4',
+                  example: '536d75f1-754b-4888-8575-9d733d8c6886.mp4',
                 },
                 url: {
                   type: 'string',
@@ -44,7 +86,7 @@ export function ApiCreatePresignedUrl() {
             },
             example: [
               {
-                filename: 'uuid.mp4',
+                filename: '536d75f1-754b-4888-8575-9d733d8c6886.mp4',
                 url: 'pre-signed-url-for-original-video',
               },
             ],

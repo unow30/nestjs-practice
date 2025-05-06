@@ -9,9 +9,10 @@ import {
   BadRequestException,
   Get,
   Param,
+  Version,
 } from '@nestjs/common';
 import { CommonService } from './common.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 import { UpdateLocalFilePathDto } from '../movie/dto/update-local-filepath.dto';
@@ -25,11 +26,14 @@ import {
   ApiPublishVideoS3,
   ApiPublishVideo,
   ApiGetStaticVideoPath,
+  ApiCreatePresignedUrlV2,
 } from '../document/decorator/video-api.decorator';
 import * as fs from 'fs/promises';
+import { PresignedUrlV2Dto } from './dto/presigned-url-v2.dto';
 
 @Controller('common')
 @ApiBearerAuth()
+@ApiTags('common')
 export class CommonController {
   constructor(
     private readonly commonService: CommonService,
@@ -40,10 +44,21 @@ export class CommonController {
     private readonly thumbnailQueue: Queue,
   ) {}
 
+  @Version('1')
   @Post('presigned-url')
   @ApiCreatePresignedUrl()
   async createPresignedUrl() {
     return await this.commonService.createPresignedUrl();
+  }
+
+  @Version('2')
+  @Post('presigned-url')
+  @ApiCreatePresignedUrlV2()
+  async createPresignedUrlV2(@Body() presignedUrlV2Dto: PresignedUrlV2Dto) {
+    return await this.commonService.createPresignedUrlV2(
+      presignedUrlV2Dto.filename,
+      presignedUrlV2Dto.contentType,
+    );
   }
 
   @Post('video/multer')

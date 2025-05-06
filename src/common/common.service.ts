@@ -81,6 +81,50 @@ export class CommonService {
     }
   }
 
+  /**
+   * 직접 filename과 contentType을 받아 presigned URL을 생성하는 메소드
+   * @param filename UUID 형식의 파일명 (확장자 포함)
+   * @param contentType 파일의 Content-Type (예: video/mp4, image/jpg)
+   * @param expiresIn URL의 유효 시간 (초)
+   * @returns 생성된 presigned URL 정보
+   */
+  async createPresignedUrlV2(
+    filename: string,
+    contentType: string,
+    expiresIn = 300,
+  ) {
+    const s3Client = this.awsService.getS3Client();
+    const bucketName = this.configService.get<string>(
+      envVariableKeys.bucketName,
+    );
+    const basePath = 'public/temp';
+
+    // 원본 파일 파라미터
+    const originalParams = {
+      Bucket: bucketName,
+      Key: `${basePath}/${filename}`,
+      ACL: ObjectCannedACL.public_read,
+      ContentType: contentType,
+    };
+
+    try {
+      const originalUrl = await getSignedUrl(
+        s3Client,
+        new PutObjectCommand(originalParams),
+        {
+          expiresIn,
+        },
+      );
+
+      return [
+        { filename: filename, url: originalUrl },
+      ];
+    } catch (e) {
+      console.error(e);
+      throw new InternalServerErrorException('S3 Presigned Url error');
+    }
+  }
+
   async saveMovieToPermanentStorage(filename: string) {
     const s3Client = this.awsService.getS3Client(); // AwsService에서 S3Client 가져오기
     try {
