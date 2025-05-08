@@ -38,8 +38,7 @@ export class MovieService {
     private readonly directorRepository: Repository<Director>,
     @InjectRepository(Genre)
     private readonly genreRepository: Repository<Genre>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(MovieUserLike)
     private readonly movieUserLikeRepository: Repository<MovieUserLike>,
     private readonly dataSource: DataSource,
@@ -118,10 +117,14 @@ export class MovieService {
       );
 
       data = data.map((x) => {
-        return plainToInstance(Movie, {
-          ...x,
-          likeStatus: x.id in likedMovieMap ? likedMovieMap[x.id] : null,
-        });
+        return plainToInstance(
+          Movie,
+          {
+            ...x,
+            likeStatus: x.id in likedMovieMap ? likedMovieMap[x.id] : null,
+          },
+          { excludeExtraneousValues: true },
+        );
       });
     }
 

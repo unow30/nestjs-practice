@@ -77,40 +77,15 @@ export class Movie extends BaseTable {
   director: Director;
 
   @Column()
-  // @Transform(({ value }) => {
-  //   // 이미 완전한 URL 형식이면 그대로 사용
-  //   if (value.startsWith('http://') || value.startsWith('https://')) {
-  //     return value;
-  //   }
-  //
-  //   // S3 버킷 URL 가져오기
-  //   const bucketName = process.env.BUCKET_NAME || 'your-bucket-name';
-  //   const region = process.env.AWS_REGION || 'ap-northeast-2';
-  //   const s3BaseUrl = `https://${bucketName}.s3.${region}.amazonaws.com`;
-  //
-  //   // 파일명에서 확장자 제거 (마지막 점 이후 문자 제거)
-  //   const filenameWithoutExt = value.includes('.')
-  //     ? value.substring(0, value.lastIndexOf('.'))
-  //     : value;
-  //
-  //   // 이미 경로 형식을 포함하는 경우 (public/movie/ 등)
-  //   if (value.includes('public/movie/')) {
-  //     // 경로에서 파일명 부분만 추출하여 확장자 제거 후 재구성
-  //     const pathParts = value.split('/');
-  //     const filename = pathParts[pathParts.length - 1];
-  //     const filenameWithoutExt = filename.includes('.')
-  //       ? filename.substring(0, filename.lastIndexOf('.'))
-  //       : filename;
-  //
-  //     // 경로 재구성
-  //     pathParts[pathParts.length - 1] = `${filenameWithoutExt}/wm.mp4`;
-  //     return `${s3BaseUrl}/${pathParts.join('/')}`;
-  //   }
-  //
-  //   // 단순 파일명인 경우 (UUID_timestamp.mp4 형식)
-  //   return `${s3BaseUrl}/public/movie/${filenameWithoutExt}/wm.mp4`;
-  // })
   @Transform(({ value }) => {
+    // 이미 CloudFront URL 형식이면 그대로 반환
+    if (
+      value &&
+      typeof value === 'string' &&
+      value.includes('cloudfront.net')
+    ) {
+      return value;
+    }
     return `https://d16ufd393m7gss.cloudfront.net/public/movie/${value}/origin.m3u8`;
   })
   @ApiProperty({ description: '영화 파일명:uuid' })
