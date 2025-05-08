@@ -117,14 +117,22 @@ export class MovieService {
       );
 
       data = data.map((x) => {
-        return plainToInstance(
-          Movie,
-          {
-            ...x,
-            likeStatus: x.id in likedMovieMap ? likedMovieMap[x.id] : null,
-          },
-          { excludeExtraneousValues: true },
-        );
+        const originalMovieFileName = x.movieFileName;
+
+        const transformed = plainToInstance(Movie, {
+          ...x,
+          likeStatus: x.id in likedMovieMap ? likedMovieMap[x.id] : null,
+        });
+
+        if (
+          originalMovieFileName &&
+          typeof originalMovieFileName === 'string' &&
+          originalMovieFileName.includes('cloudfront.net')
+        ) {
+          transformed.movieFileName = originalMovieFileName;
+        }
+
+        return transformed;
       });
     }
 
