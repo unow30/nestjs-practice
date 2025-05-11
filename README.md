@@ -78,7 +78,8 @@ With Mau, you can deploy your application in just a few clicks, allowing you to 
 # 영상 변환 로직(aws)
 
 - [webVTT 생성.md](docs/webVTT%20%EC%83%9D%EC%84%B1.md)
-- 
+- [mediaconvert job 요청.md](docs/mediaconvert%20job%20%EC%9A%94%EC%B2%AD.md)
+- [mediaconvert job-template.md](docs/mediaconvert%20job-template.md)
 
 # Elastic Beanstalk 배포 문서
 
