@@ -1,4 +1,3 @@
-
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
@@ -18,11 +17,6 @@
 </p>
 
 ## NestJs Test API Documentation
-
-## Todo
-- ~~업로드한 정적 파일 리스트 불러오기~~ [v]
-- 업로드한 정적 파일 nginx로 전송하기
-- s3 업로드파일 cdn으로 전송하기
 
 ## swagger doc
 <p>https://api.ceramic-tager.store/doc</p>
@@ -80,6 +74,19 @@ $ mau deploy
 ```
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+
+# 영상 변환 로직(aws)
+
+- [webVTT 생성.md](docs/webVTT%20%EC%83%9D%EC%84%B1.md)
+- 
+
+# Elastic Beanstalk 배포 문서
+
+프로젝트의 AWS Elastic Beanstalk 배포와 관련된 문서는 다음 링크에서 확인할 수 있습니다:
+
+- [1. eb 권한부여 및 생성](/docs/elastic-beanstalk/1.%20eb%20권한부여%20및%20생성.md)
+- [2. eb 서버배포](/docs/elastic-beanstalk/2.%20eb%20서버배포.md)
+- [3. eb nginx 설정](/docs/elastic-beanstalk/3.%20eb%20nginx%20설정.md)
 
 # server descripton
 
