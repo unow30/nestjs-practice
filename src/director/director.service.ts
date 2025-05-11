@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { CreateDirectorDto } from './dto/create-director.dto';
 import { UpdateDirectorDto } from './dto/update-director.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -53,7 +57,9 @@ export class DirectorService {
       await this.directorRepository.delete(id);
       return { id };
     } catch (error) {
-      throw new BadRequestException('해당 감독이 등록된 영화가 존재하여 삭제할 수 없습니다.');
+      throw new BadRequestException(
+        '해당 감독이 등록된 영화가 존재하여 삭제할 수 없습니다.',
+      );
     }
   }
 }
