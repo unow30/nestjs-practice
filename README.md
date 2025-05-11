@@ -76,10 +76,12 @@ $ mau deploy
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
 # 영상 변환 로직(aws)
-
-- [webVTT 생성.md](docs/webVTT%20%EC%83%9D%EC%84%B1.md)
-- [mediaconvert job 요청.md](docs/mediaconvert%20job%20%EC%9A%94%EC%B2%AD.md)
-- [mediaconvert job-template.md](docs/mediaconvert%20job-template.md)
+- [1. HLS(HTTP Live Streaming) 프로토콜.md](docs/HLS%20%EC%98%81%EC%83%81%20%EB%B3%80%ED%99%98/1.%20HLS%28HTTP%20Live%20Streaming%29%20%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C.md)
+- [2. aws media convert를 이용한 영상파일 변환 로직.md](docs/HLS%20%EC%98%81%EC%83%81%20%EB%B3%80%ED%99%98/2.%20aws%20media%20convert%EB%A5%BC%20%EC%9D%B4%EC%9A%A9%ED%95%9C%20%EC%98%81%EC%83%81%ED%8C%8C%EC%9D%BC%20%EB%B3%80%ED%99%98%20%EB%A1%9C%EC%A7%81.md)
+- [3. HLS player 구현.md](docs/HLS%20%EC%98%81%EC%83%81%20%EB%B3%80%ED%99%98/3.%20HLS%20player%20%EA%B5%AC%ED%98%84.md)
+- [4. 썸네일 미리보기 기능 구현과정.md](docs/HLS%20%EC%98%81%EC%83%81%20%EB%B3%80%ED%99%98/4.%20%EC%8D%B8%EB%84%A4%EC%9D%BC%20%EB%AF%B8%EB%A6%AC%EB%B3%B4%EA%B8%B0%20%EA%B8%B0%EB%8A%A5%20%EA%B5%AC%ED%98%84%EA%B3%BC%EC%A0%95.md)
+- [5. webVTT 생성.md](docs/HLS%20%EC%98%81%EC%83%81%20%EB%B3%80%ED%99%98/5.%20webVTT%20%EC%83%9D%EC%84%B1.md)
+- [mediaconvert job 요청.md](docs/HLS%20%EC%98%81%EC%83%81%20%EB%B3%80%ED%99%98/mediaconvert%20job%20%EC%9A%94%EC%B2%AD.md)
 
 # Elastic Beanstalk 배포 문서
 

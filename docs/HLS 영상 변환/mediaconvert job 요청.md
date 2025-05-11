@@ -1,9 +1,9 @@
-![img02.png](assets/img02.png)
+![img02.png](../assets/img02.png)
 
 ### s3 트리거
 - s3 파일 업로드, 파일이동(복사) 이벤트 감지
 
-![img03.png](assets/img03.png)
+![img03.png](../assets/img03.png)
 
 ### 람다 함수 코드(index.mjs만 표시)
 ```js
