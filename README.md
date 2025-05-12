@@ -75,6 +75,9 @@ $ mau deploy
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
+# 웹사이트 영상 업로드 과정
+- [media upload 과정.md](docs/media%20upload%20%EA%B3%BC%EC%A0%95.md)
+
 # 영상 변환 로직(aws)
 - [1. HLS(HTTP Live Streaming) 프로토콜.md](docs/HLS%20%EC%98%81%EC%83%81%20%EB%B3%80%ED%99%98/1.%20HLS%28HTTP%20Live%20Streaming%29%20%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C.md)
 - [2. aws media convert를 이용한 영상파일 변환 로직.md](docs/HLS%20%EC%98%81%EC%83%81%20%EB%B3%80%ED%99%98/2.%20aws%20media%20convert%EB%A5%BC%20%EC%9D%B4%EC%9A%A9%ED%95%9C%20%EC%98%81%EC%83%81%ED%8C%8C%EC%9D%BC%20%EB%B3%80%ED%99%98%20%EB%A1%9C%EC%A7%81.md)
