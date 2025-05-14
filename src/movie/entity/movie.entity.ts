@@ -86,7 +86,8 @@ export class Movie extends BaseTable {
     ) {
       return value;
     }
-    return `https://d16ufd393m7gss.cloudfront.net/public/movie/${value}/origin.m3u8`;
+    // return `https://d16ufd393m7gss.cloudfront.net/public/movie/${value}/origin.m3u8`;
+    return `https://ceramic-tager.store/public/movie/${value}/origin.m3u8`;
   })
   @ApiProperty({ description: '영화 파일명:uuid' })
   movieFileName: string;
