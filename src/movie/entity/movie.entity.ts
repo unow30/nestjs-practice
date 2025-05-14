@@ -86,6 +86,14 @@ export class Movie extends BaseTable {
     ) {
       return value;
     }
+    // 이미 ceramic-tager.store URL 형식이면 그대로 반환
+    if (
+      value &&
+      typeof value === 'string' &&
+      value.includes('ceramic-tager.store')
+    ) {
+      return value;
+    }
     // return `https://d16ufd393m7gss.cloudfront.net/public/movie/${value}/origin.m3u8`;
     return `https://ceramic-tager.store/public/movie/${value}/origin.m3u8`;
   })
