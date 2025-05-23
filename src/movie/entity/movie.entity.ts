@@ -106,14 +106,4 @@ export class Movie extends BaseTable {
     description: '영화 좋아요 사용자 목록',
   })
   likedUsers: MovieUserLike[];
-
-  @Column({
-    nullable: true,
-  })
-  @ApiProperty({
-    description:
-      '미디어컨버터 미디어 변환 작업 id. 변환 요청시 람다함수에서 전달',
-    nullable: true,
-  })
-  jobId: string;
 }
